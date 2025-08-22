@@ -65,12 +65,10 @@ class DeleteCourseNotifier extends StateNotifier<AsyncValue<void>> {
   }
 }
 
-final getIdCourseProvider =
-    StateNotifierProvider.family<
-      GetIdCourseNotifier,
-      AsyncValue<CourseStuds>,
-      int?
-    >((ref, id) => GetIdCourseNotifier(ref, id));
+final getIdCourseProvider = StateNotifierProvider.autoDispose
+    .family<GetIdCourseNotifier, AsyncValue<CourseStuds>, int?>(
+      (ref, id) => GetIdCourseNotifier(ref, id),
+    );
 
 class GetIdCourseNotifier extends StateNotifier<AsyncValue<CourseStuds>> {
   GetIdCourseNotifier(this.ref, this.id) : super(AsyncValue.loading()) {
@@ -113,3 +111,9 @@ class CancelJoinNotifier extends StateNotifier<AsyncValue<CancelJoin?>> {
     state = AsyncData(ids);
   }
 }
+
+enum courseFilter { all, active, inactive }
+
+final courseFilterProvider = StateProvider<courseFilter>(
+  (ref) => courseFilter.all,
+);

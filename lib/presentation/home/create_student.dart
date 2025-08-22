@@ -175,7 +175,7 @@ class _CreateStudendState extends ConsumerState<CreateStudent> {
                       : Center(
                           child: ElevatedButton(
                             style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.blue,
+                              backgroundColor: Colors.green,
                               padding: EdgeInsets.symmetric(
                                 horizontal: 10,
                                 vertical: 3,
@@ -183,7 +183,7 @@ class _CreateStudendState extends ConsumerState<CreateStudent> {
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(8),
                               ),
-                              side: BorderSide(color: Colors.black),
+                              side: BorderSide(color: Colors.white),
                             ),
                             onPressed: () {
                               if (!key.currentState!.validate()) return;

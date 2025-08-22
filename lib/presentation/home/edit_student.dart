@@ -86,9 +86,15 @@ class _EditStudentState extends ConsumerState<EditStudent> {
       n.when(
         data: (data) {
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Updated success', style: 14.sp(color: Colors.white))),
+            SnackBar(
+              content: Text(
+                'Updated success',
+                style: 14.sp(color: Colors.white),
+              ),
+            ),
           );
-          ref.read(getStudentProvider('').notifier).get('');
+          ref.invalidate(getJoinStudentProvider(''));
+          ref.invalidate(getIdStudentProvider(widget.currentStud.id));
           Navigator.pop(context);
         },
         error: (error, _) {
@@ -183,7 +189,7 @@ class _EditStudentState extends ConsumerState<EditStudent> {
                       : Center(
                           child: ElevatedButton(
                             style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.blue,
+                              backgroundColor: Colors.green,
                               padding: EdgeInsets.symmetric(
                                 horizontal: 10,
                                 vertical: 3,
@@ -191,7 +197,7 @@ class _EditStudentState extends ConsumerState<EditStudent> {
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(8),
                               ),
-                              side: BorderSide(color: Colors.black),
+                              side: BorderSide(color: Colors.white),
                             ),
                             onPressed: () {
                               if (!key.currentState!.validate()) return;

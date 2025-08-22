@@ -120,10 +120,16 @@ class _EditCourseState extends ConsumerState<EditCourse> {
       n.when(
         data: (_) {
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Update course done!', style: 14.sp(color: Colors.white))),
+            SnackBar(
+              content: Text(
+                'Update course done!',
+                style: 14.sp(color: Colors.white),
+              ),
+            ),
           );
           clear();
           ref.invalidate(getCourseProvider);
+          ref.invalidate(getIdCourseProvider(widget.currentCour.id));
           Navigator.pop(context);
         },
         error: (error, _) {
@@ -274,7 +280,7 @@ class _EditCourseState extends ConsumerState<EditCourse> {
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(8),
                               ),
-                              backgroundColor: Colors.blue,
+                              backgroundColor: Colors.green,
                             ),
                             onPressed: () async {
                               if (!key.currentState!.validate()) return;

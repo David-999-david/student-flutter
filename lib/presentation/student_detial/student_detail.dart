@@ -4,6 +4,7 @@ import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:intl/intl.dart';
 import 'package:student/app_text_style.dart';
 import 'package:student/data/model/student_model.dart';
+import 'package:student/presentation/home/edit_student.dart';
 import 'package:student/presentation/home/home_state.dart';
 import 'package:student/presentation/student_detial/add_course.dart';
 
@@ -43,12 +44,47 @@ class _StudentDetailState extends ConsumerState<StudentDetail> {
                   onPressed: detail == null
                       ? null
                       : () {
-                          !widget.s.status
+                          !detail.status
                               ? ScaffoldMessenger.of(context).showSnackBar(
                                   SnackBar(
-                                    content: Text(
-                                      'This Student is Inactive, Can\'t join with course',
-                                      style: 14.sp(),
+                                    content: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Text(
+                                          'This student is Inactive',
+                                          style: 14.sp(color: Colors.white),
+                                        ),
+                                        ElevatedButton(
+                                          style: ElevatedButton.styleFrom(
+                                            padding: EdgeInsets.symmetric(
+                                              horizontal: 5,
+                                              vertical: 2,
+                                            ),
+                                            backgroundColor: Colors.green,
+                                            shape: RoundedRectangleBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(8),
+                                            ),
+                                          ),
+                                          onPressed: () {
+                                            Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                builder: (context) {
+                                                  return EditStudent(
+                                                    currentStud: detail,
+                                                  );
+                                                },
+                                              ),
+                                            );
+                                          },
+                                          child: Text(
+                                            'Edit',
+                                            style: 14.sp(color: Colors.white),
+                                          ),
+                                        ),
+                                      ],
                                     ),
                                   ),
                                 )
@@ -122,32 +158,34 @@ class _StudentDetailState extends ConsumerState<StudentDetail> {
 Widget studentDetail(Student s, String Function(DateTime?) formatDate) {
   return Padding(
     padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 15),
-    child: Container(
-      padding: EdgeInsets.only(left: 14, right: 14, bottom: 10, top: 5),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(8),
-        border: Border.all(color: Colors.black),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(s.name, style: 16.sp()),
-              Text(s.status ? 'Active' : 'Inactive', style: 14.sp()),
-            ],
-          ),
-          SizedBox(height: 5),
-          Text(s.email, style: 13.sp()),
-          SizedBox(height: 5),
-          Text(s.address, style: 13.sp()),
-          SizedBox(height: 5),
-          Text(s.phone, style: 13.sp()),
-          SizedBox(height: 5),
-          Text(s.gender, style: 13.sp()),
-        ],
+    child: InkWell(
+      child: Container(
+        padding: EdgeInsets.only(left: 14, right: 14, bottom: 10, top: 5),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(8),
+          border: Border.all(color: Colors.black),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(s.name, style: 16.sp()),
+                Text(s.status ? 'Active' : 'Inactive', style: 14.sp()),
+              ],
+            ),
+            SizedBox(height: 5),
+            Text(s.email, style: 13.sp()),
+            SizedBox(height: 5),
+            Text(s.address, style: 13.sp()),
+            SizedBox(height: 5),
+            Text(s.phone, style: 13.sp()),
+            SizedBox(height: 5),
+            Text(s.gender, style: 13.sp()),
+          ],
+        ),
       ),
     ),
   );

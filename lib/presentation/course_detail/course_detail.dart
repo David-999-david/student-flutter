@@ -5,6 +5,7 @@ import 'package:intl/intl.dart';
 import 'package:student/app_text_style.dart';
 import 'package:student/data/model/course_model.dart';
 import 'package:student/presentation/course/course_state.dart';
+import 'package:student/presentation/course/edit_course.dart';
 import 'package:student/presentation/course_detail/add_student.dart';
 import 'package:student/presentation/home/home_state.dart';
 
@@ -30,7 +31,12 @@ class _CourseDetailState extends ConsumerState<CourseDetail> {
       n.when(
         data: (ids) {
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Cancel Join success', style: 14.sp(color: Colors.white))),
+            SnackBar(
+              content: Text(
+                'Cancel Join success',
+                style: 14.sp(color: Colors.white),
+              ),
+            ),
           );
           if (ids != null) {
             ref.invalidate(getIdCourseProvider(widget.c.id));
@@ -68,12 +74,62 @@ class _CourseDetailState extends ConsumerState<CourseDetail> {
                   onPressed: detail == null
                       ? null
                       : () {
-                          !widget.c.status
+                          !detail.status
                               ? ScaffoldMessenger.of(context).showSnackBar(
                                   SnackBar(
-                                    content: Text(
-                                      'This course is Inactive, for add students please update to Active',
-                                      style: 14.sp(color: Colors.white),
+                                    content: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Text(
+                                          'This course is Inactive',
+                                          style: 14.sp(color: Colors.white),
+                                        ),
+                                        ElevatedButton(
+                                          style: ElevatedButton.styleFrom(
+                                            padding: EdgeInsets.symmetric(
+                                              horizontal: 5,
+                                              vertical: 2,
+                                            ),
+                                            backgroundColor: Colors.green,
+                                            shape: RoundedRectangleBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(8),
+                                            ),
+                                          ),
+                                          onPressed: () {
+                                            Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                builder: (context) {
+                                                  return EditCourse(
+                                                    currentCour: CourseModel(
+                                                      id: detail.id,
+                                                      name: detail.name,
+                                                      description:
+                                                          detail.description,
+                                                      status: detail.status,
+                                                      studentLimit:
+                                                          detail.studentLimit,
+                                                      currentStudents: detail
+                                                          .currentStudents,
+                                                      startDate:
+                                                          detail.startDate,
+                                                      endDate: detail.endDate,
+                                                      createdAt:
+                                                          detail.createdAt,
+                                                    ),
+                                                  );
+                                                },
+                                              ),
+                                            );
+                                          },
+                                          child: Text(
+                                            'Edit',
+                                            style: 14.sp(color: Colors.white),
+                                          ),
+                                        ),
+                                      ],
                                     ),
                                   ),
                                 )
@@ -262,7 +318,7 @@ Widget studentsInCourse(
                                       mainAxisAlignment: MainAxisAlignment.end,
                                       children: [
                                         Text(
-                                          'Are you sure want to delete?',
+                                          'Are you sure want to remove?',
                                           style: 15.sp(),
                                         ),
                                         SizedBox(height: 15),

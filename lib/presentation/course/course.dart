@@ -56,6 +56,8 @@ class _CourseState extends ConsumerState<Course> {
       );
     });
 
+    final filterState = ref.watch(courseFilterProvider);
+
     return Scaffold(
       backgroundColor: Colors.blueGrey,
       body: CustomScrollView(
@@ -63,7 +65,33 @@ class _CourseState extends ConsumerState<Course> {
           SliverPadding(
             padding: EdgeInsets.only(right: 30, left: 30, top: 50, bottom: 10),
             sliver: SliverToBoxAdapter(
-              child: searchField(query, 'Search', onChanged),
+              child: Row(
+                children: [
+                  Expanded(child: searchField(query, 'Search', onChanged)),
+                  PopupMenuButton<courseFilter>(
+                    icon: Icon(Icons.arrow_drop_down),
+                    initialValue: filterState,
+                    onSelected: (value) =>
+                        ref.read(courseFilterProvider.notifier).state = value,
+                    itemBuilder: (context) {
+                      return [
+                        PopupMenuItem(
+                          child: Text('All', style: 13.sp()),
+                          value: courseFilter.all,
+                        ),
+                        PopupMenuItem(
+                          child: Text('Active', style: 13.sp()),
+                          value: courseFilter.active,
+                        ),
+                        PopupMenuItem(
+                          child: Text('Inactive', style: 13.sp()),
+                          value: courseFilter.inactive,
+                        ),
+                      ];
+                    },
+                  ),
+                ],
+              ),
             ),
           ),
           getState.when(
@@ -83,13 +111,19 @@ class _CourseState extends ConsumerState<Course> {
               );
             },
             data: (courses) {
+              final filtered = switch (filterState) {
+                courseFilter.all => courses,
+                courseFilter.active => courses.where((c) => c.status).toList(),
+                courseFilter.inactive =>
+                  courses.where((c) => !c.status).toList(),
+              };
               if (courses.isNotEmpty) {
                 return SliverPadding(
                   padding: EdgeInsets.symmetric(horizontal: 5, vertical: 10),
                   sliver: SliverList.builder(
-                    itemCount: courses.length,
+                    itemCount: filtered.length,
                     itemBuilder: (context, index) {
-                      final course = courses[index];
+                      final course = filtered[index];
                       return courseItem(course, formated, context);
                     },
                   ),

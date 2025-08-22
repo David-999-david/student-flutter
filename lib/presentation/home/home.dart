@@ -60,6 +60,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       );
     });
 
+    final filterState = ref.watch(filterProvider);
+
     return Scaffold(
       backgroundColor: Colors.blueGrey,
       body: CustomScrollView(
@@ -109,7 +111,35 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
           SliverPadding(
             padding: EdgeInsets.symmetric(horizontal: 20, vertical: 5),
             sliver: SliverToBoxAdapter(
-              child: searchField(query, 'Search...', onChange),
+              child: Row(
+                children: [
+                  Expanded(child: searchField(query, 'Search...', onChange)),
+                  PopupMenuButton<studentFilter>(
+                    icon: Icon(Icons.arrow_drop_down),
+                    initialValue: filterState,
+                    onSelected: (value) {
+                      ref.read(filterProvider.notifier).state = value;
+                    },
+                    borderRadius: BorderRadius.circular(8),
+                    itemBuilder: (context) {
+                      return [
+                        PopupMenuItem(
+                          child: Text('All', style: 13.sp()),
+                          value: studentFilter.all,
+                        ),
+                        PopupMenuItem(
+                          child: Text('Active', style: 13.sp()),
+                          value: studentFilter.active,
+                        ),
+                        PopupMenuItem(
+                          child: Text('Inactive', style: 13.sp()),
+                          value: studentFilter.inactive,
+                        ),
+                      ];
+                    },
+                  ),
+                ],
+              ),
             ),
           ),
           getStuState.when(
@@ -130,13 +160,20 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               );
             },
             data: (students) {
+              final filter = switch (filterState) {
+                studentFilter.all => students,
+                studentFilter.active =>
+                  students.where((s) => s.status).toList(),
+                studentFilter.inactive =>
+                  students.where((s) => !s.status).toList(),
+              };
               if (students.isNotEmpty) {
                 return SliverPadding(
                   padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
                   sliver: SliverList.builder(
-                    itemCount: students.length,
+                    itemCount: filter.length,
                     itemBuilder: (context, index) {
-                      return student(students[index], index + 1, context);
+                      return student(filter[index], index + 1, context);
                     },
                   ),
                 );

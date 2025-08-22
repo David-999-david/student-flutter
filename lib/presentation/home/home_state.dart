@@ -125,3 +125,7 @@ class GetJoinStudentNotifier extends StateNotifier<AsyncValue<List<Student>>> {
     state = await AsyncValue.guard(() => StudentService().getByQuery(query));
   }
 }
+
+enum studentFilter { all, active, inactive }
+
+final filterProvider = StateProvider<studentFilter>((ref) => studentFilter.all);

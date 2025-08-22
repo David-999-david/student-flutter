@@ -105,7 +105,12 @@ class _CreateCourseState extends ConsumerState<CreateCourse> {
       n.when(
         data: (data) {
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Create new course done!', style: 14.sp(color: Colors.white))),
+            SnackBar(
+              content: Text(
+                'Create new course done!',
+                style: 14.sp(color: Colors.white),
+              ),
+            ),
           );
           clear();
           ref.invalidate(getCourseProvider);
@@ -260,7 +265,7 @@ class _CreateCourseState extends ConsumerState<CreateCourse> {
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(8),
                               ),
-                              backgroundColor: Colors.blue,
+                              backgroundColor: Colors.green,
                             ),
                             onPressed: () async {
                               if (!key.currentState!.validate()) return;
