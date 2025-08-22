@@ -104,6 +104,8 @@ class _CreateCourseState extends ConsumerState<CreateCourse> {
     ref.listen(createCourseProvider, (p, n) {
       n.when(
         data: (data) {
+          ScaffoldMessenger.of(context).clearSnackBars();
+
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               content: Text(
@@ -124,6 +126,8 @@ class _CreateCourseState extends ConsumerState<CreateCourse> {
           );
         },
         error: (error, _) {
+          ScaffoldMessenger.of(context).clearSnackBars();
+
           ScaffoldMessenger.of(
             context,
           ).showSnackBar(SnackBar(content: Text(error.toString())));
@@ -270,6 +274,8 @@ class _CreateCourseState extends ConsumerState<CreateCourse> {
                             onPressed: () async {
                               if (!key.currentState!.validate()) return;
                               if (startDate == null || endDate == null) {
+                                ScaffoldMessenger.of(context).clearSnackBars();
+
                                 ScaffoldMessenger.of(context).showSnackBar(
                                   SnackBar(
                                     content: Text(
@@ -280,6 +286,8 @@ class _CreateCourseState extends ConsumerState<CreateCourse> {
                                 );
                               }
                               if (startDate!.isAfter(endDate!)) {
+                                ScaffoldMessenger.of(context).clearSnackBars();
+
                                 ScaffoldMessenger.of(context).showSnackBar(
                                   SnackBar(
                                     content: Text(

@@ -74,6 +74,8 @@ class _CreateStudendState extends ConsumerState<CreateStudent> {
       n.when(
         data: (data) {
           clear();
+          ScaffoldMessenger.of(context).clearSnackBars();
+
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               content: Text(
@@ -86,6 +88,8 @@ class _CreateStudendState extends ConsumerState<CreateStudent> {
           Navigator.pop(context);
         },
         error: (error, _) {
+          ScaffoldMessenger.of(context).clearSnackBars();
+
           ScaffoldMessenger.of(
             context,
           ).showSnackBar(SnackBar(content: Text(error.toString())));

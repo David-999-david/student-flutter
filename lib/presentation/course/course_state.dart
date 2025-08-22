@@ -16,12 +16,10 @@ class CreateCourseNotifier extends StateNotifier<AsyncValue<void>> {
   }
 }
 
-final getCourseProvider =
-    StateNotifierProvider.family<
-      GetCourseNotifier,
-      AsyncValue<List<CourseModel>>,
-      String?
-    >((ref, query) => GetCourseNotifier(ref, query));
+final getCourseProvider = StateNotifierProvider.autoDispose
+    .family<GetCourseNotifier, AsyncValue<List<CourseModel>>, String?>(
+      (ref, query) => GetCourseNotifier(ref, query),
+    );
 
 class GetCourseNotifier extends StateNotifier<AsyncValue<List<CourseModel>>> {
   GetCourseNotifier(this.ref, this.query) : super(AsyncValue.loading()) {

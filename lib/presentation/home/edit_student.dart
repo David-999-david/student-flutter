@@ -85,6 +85,7 @@ class _EditStudentState extends ConsumerState<EditStudent> {
     ref.listen(editStudentProvider, (p, n) {
       n.when(
         data: (data) {
+          ScaffoldMessenger.of(context).clearSnackBars();
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               content: Text(
@@ -98,6 +99,7 @@ class _EditStudentState extends ConsumerState<EditStudent> {
           Navigator.pop(context);
         },
         error: (error, _) {
+          ScaffoldMessenger.of(context).clearSnackBars();
           ScaffoldMessenger.of(
             context,
           ).showSnackBar(SnackBar(content: Text(error.toString())));

@@ -119,6 +119,8 @@ class _EditCourseState extends ConsumerState<EditCourse> {
     ref.listen(editCourseProvider, (p, n) {
       n.when(
         data: (_) {
+          ScaffoldMessenger.of(context).clearSnackBars();
+
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               content: Text(
@@ -133,6 +135,8 @@ class _EditCourseState extends ConsumerState<EditCourse> {
           Navigator.pop(context);
         },
         error: (error, _) {
+          ScaffoldMessenger.of(context).clearSnackBars();
+
           ScaffoldMessenger.of(
             context,
           ).showSnackBar(SnackBar(content: Text(error.toString())));
@@ -285,6 +289,8 @@ class _EditCourseState extends ConsumerState<EditCourse> {
                             onPressed: () async {
                               if (!key.currentState!.validate()) return;
                               if (startDate == null || endDate == null) {
+                                ScaffoldMessenger.of(context).clearSnackBars();
+
                                 ScaffoldMessenger.of(context).showSnackBar(
                                   SnackBar(
                                     content: Text(
@@ -295,6 +301,8 @@ class _EditCourseState extends ConsumerState<EditCourse> {
                                 );
                               }
                               if (startDate!.isAfter(endDate!)) {
+                                ScaffoldMessenger.of(context).clearSnackBars();
+
                                 ScaffoldMessenger.of(context).showSnackBar(
                                   SnackBar(
                                     content: Text(
@@ -306,6 +314,8 @@ class _EditCourseState extends ConsumerState<EditCourse> {
                                 return;
                               }
                               if (endDate!.isBefore(startDate!)) {
+                                ScaffoldMessenger.of(context).clearSnackBars();
+
                                 ScaffoldMessenger.of(context).showSnackBar(
                                   SnackBar(
                                     content: Text(

@@ -30,6 +30,7 @@ class _CourseDetailState extends ConsumerState<CourseDetail> {
     ref.listen(cancelJoinProvider, (p, n) {
       n.when(
         data: (ids) {
+          ScaffoldMessenger.of(context).clearSnackBars();
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               content: Text(
@@ -46,6 +47,7 @@ class _CourseDetailState extends ConsumerState<CourseDetail> {
           }
         },
         error: (error, _) {
+          ScaffoldMessenger.of(context).clearSnackBars();
           ScaffoldMessenger.of(
             context,
           ).showSnackBar(SnackBar(content: Text(error.toString())));
@@ -263,13 +265,26 @@ Widget courseDetail(CourseStuds course, String Function(DateTime?) formatDate) {
             ),
           ),
           SizedBox(height: 6),
-          RichText(
-            text: TextSpan(
-              children: [
-                TextSpan(text: 'End Date   :     ', style: 13.sp()),
-                TextSpan(text: formatDate(course.endDate), style: 14.sp()),
-              ],
-            ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              RichText(
+                text: TextSpan(
+                  children: [
+                    TextSpan(text: 'End Date   :     ', style: 13.sp()),
+                    TextSpan(text: formatDate(course.endDate), style: 14.sp()),
+                  ],
+                ),
+              ),
+              Chip(
+                padding: EdgeInsets.symmetric(horizontal: 1, vertical: 1),
+                backgroundColor: course.status ? Colors.green : Colors.red,
+                label: Text(
+                  course.status ? 'Active' : 'Inactive',
+                  style: 13.sp(color: Colors.white),
+                ),
+              ),
+            ],
           ),
         ],
       ),
@@ -293,7 +308,7 @@ Widget studentsInCourse(
               child: Slidable(
                 endActionPane: ActionPane(
                   motion: DrawerMotion(),
-                  extentRatio: 0.34,
+                  extentRatio: 0.2,
                   children: [
                     SlidableAction(
                       onPressed: (_) {
@@ -387,7 +402,7 @@ Widget studentsInCourse(
                   ],
                 ),
                 child: Container(
-                  padding: EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+                  padding: EdgeInsets.symmetric(horizontal: 10),
                   width: double.infinity,
                   decoration: BoxDecoration(
                     color: Colors.white,
@@ -406,6 +421,18 @@ Widget studentsInCourse(
                       ),
                       SizedBox(width: 15),
                       Text(s.name, style: 15.sp(color: Colors.black)),
+                      Spacer(),
+                      Chip(
+                        padding: EdgeInsets.symmetric(
+                          horizontal: 1,
+                          vertical: 1,
+                        ),
+                        backgroundColor: s.status ? Colors.green : Colors.red,
+                        label: Text(
+                          s.status ? 'Active' : 'Inactive',
+                          style: 13.sp(color: Colors.white),
+                        ),
+                      ),
                     ],
                   ),
                 ),

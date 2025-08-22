@@ -92,7 +92,7 @@ class _StudentDetailState extends ConsumerState<StudentDetail> {
                                   context,
                                   MaterialPageRoute(
                                     builder: (context) {
-                                      return AddCourse();
+                                      return AddCourse(s: detail);
                                     },
                                   ),
                                 );
@@ -167,15 +167,24 @@ Widget studentDetail(Student s, String Function(DateTime?) formatDate) {
           border: Border.all(color: Colors.black),
         ),
         child: Column(
+          mainAxisAlignment: MainAxisAlignment.end,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(s.name, style: 16.sp()),
-                Text(s.status ? 'Active' : 'Inactive', style: 14.sp()),
+                Chip(
+                  padding: EdgeInsets.symmetric(horizontal: 1, vertical: 1),
+                  backgroundColor: s.status ? Colors.green : Colors.red,
+                  label: Text(
+                    s.status ? 'Active' : 'Inactive',
+                    style: 13.sp(color: Colors.white),
+                  ),
+                ),
               ],
             ),
+            Divider(),
             SizedBox(height: 5),
             Text(s.email, style: 13.sp()),
             SizedBox(height: 5),
@@ -197,7 +206,7 @@ Widget courseForStudent(CourseForStud c, BuildContext context, int index) {
     child: Slidable(
       endActionPane: ActionPane(
         motion: DrawerMotion(),
-        extentRatio: 0.34,
+        extentRatio: 0.2,
         children: [
           SlidableAction(
             onPressed: (_) {
@@ -250,9 +259,15 @@ Widget courseForStudent(CourseForStud c, BuildContext context, int index) {
                                       //     .delete(s.id);
                                       // Navigator.pop(diaContext);
                                     },
-                                    child: Text(
-                                      'Delete',
-                                      style: 12.sp(color: Colors.white),
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Text(
+                                          'Delete',
+                                          style: 12.sp(color: Colors.white),
+                                        ),
+                                      ],
                                     ),
                                   ),
                                 ],
@@ -275,7 +290,7 @@ Widget courseForStudent(CourseForStud c, BuildContext context, int index) {
         ],
       ),
       child: Container(
-        padding: EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+        padding: EdgeInsets.symmetric(horizontal: 10, vertical: 2),
         width: double.infinity,
         decoration: BoxDecoration(
           color: Colors.white,
@@ -290,7 +305,16 @@ Widget courseForStudent(CourseForStud c, BuildContext context, int index) {
               child: Text(index.toString(), style: 14.sp(color: Colors.white)),
             ),
             SizedBox(width: 15),
-            Text(c.name, style: 15.sp(color: Colors.black)),
+            Text(c.name.toUpperCase(), style: 15.sp(color: Colors.black)),
+            Spacer(),
+            Chip(
+              padding: EdgeInsets.symmetric(horizontal: 1, vertical: 1),
+              backgroundColor: c.status ? Colors.green : Colors.red,
+              label: Text(
+                c.status ? 'Active' : 'Inactive',
+                style: 12.sp(color: Colors.white),
+              ),
+            ),
           ],
         ),
       ),

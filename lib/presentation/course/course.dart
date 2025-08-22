@@ -36,6 +36,8 @@ class _CourseState extends ConsumerState<Course> {
     ref.listen(deleteCourseProvider, (p, n) {
       n.when(
         data: (_) {
+          ScaffoldMessenger.of(context).clearSnackBars();
+
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               content: Text(
@@ -48,6 +50,8 @@ class _CourseState extends ConsumerState<Course> {
           ref.invalidate(getJoinStudentProvider(''));
         },
         error: (error, _) {
+          ScaffoldMessenger.of(context).clearSnackBars();
+
           ScaffoldMessenger.of(
             context,
           ).showSnackBar(SnackBar(content: Text(error.toString())));
@@ -209,60 +213,70 @@ Widget courseItem(
                                     decoration: BoxDecoration(
                                       borderRadius: BorderRadius.circular(8),
                                     ),
-                                    child: Column(
-                                      mainAxisAlignment: MainAxisAlignment.end,
-                                      children: [
-                                        Text(
-                                          'Are you sure want to delete?',
-                                          style: 15.sp(),
-                                        ),
-                                        SizedBox(height: 15),
-                                        Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.center,
-                                          children: [
-                                            TextButton(
-                                              onPressed: () {
-                                                Navigator.pop(context);
-                                              },
-                                              child: Text(
-                                                'Cancel',
-                                                style: 12.sp(),
-                                              ),
-                                            ),
-                                            SizedBox(width: 10),
-                                            ElevatedButton(
-                                              style: ElevatedButton.styleFrom(
-                                                padding: EdgeInsets.symmetric(
-                                                  horizontal: 5,
-                                                  vertical: 2,
-                                                ),
-                                                backgroundColor: Colors.red,
-                                                shape: RoundedRectangleBorder(
-                                                  borderRadius:
-                                                      BorderRadius.circular(8),
+                                    child: Container(
+                                      padding: EdgeInsets.symmetric(
+                                        horizontal: 10,
+                                      ),
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(8),
+                                      ),
+                                      child: Column(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.end,
+                                        children: [
+                                          Text(
+                                            'Are you sure want to delete?',
+                                            style: 15.sp(),
+                                          ),
+                                          SizedBox(height: 15),
+                                          Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
+                                            children: [
+                                              TextButton(
+                                                onPressed: () {
+                                                  Navigator.pop(context);
+                                                },
+                                                child: Text(
+                                                  'Cancel',
+                                                  style: 12.sp(),
                                                 ),
                                               ),
-                                              onPressed: () async {
-                                                await ref
-                                                    .read(
-                                                      deleteCourseProvider
-                                                          .notifier,
-                                                    )
-                                                    .delete(course.id);
+                                              ElevatedButton(
+                                                style: ElevatedButton.styleFrom(
+                                                  padding: EdgeInsets.symmetric(
+                                                    horizontal: 5,
+                                                    vertical: 2,
+                                                  ),
+                                                  backgroundColor: Colors.red,
+                                                  shape: RoundedRectangleBorder(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                          8,
+                                                        ),
+                                                  ),
+                                                ),
+                                                onPressed: () async {
+                                                  await ref
+                                                      .read(
+                                                        deleteCourseProvider
+                                                            .notifier,
+                                                      )
+                                                      .delete(course.id);
 
-                                                Navigator.pop(dialogContext);
-                                              },
-                                              child: Text(
-                                                'Delete',
-                                                style: 12.sp(
-                                                  color: Colors.white,
+                                                  Navigator.pop(dialogContext);
+                                                },
+                                                child: Text(
+                                                  'Delete',
+                                                  style: 12.sp(
+                                                    color: Colors.white,
+                                                  ),
                                                 ),
                                               ),
-                                            ),
-                                          ],
-                                        ),
-                                      ],
+                                            ],
+                                          ),
+                                        ],
+                                      ),
                                     ),
                                   ),
                                 ),
@@ -351,19 +365,37 @@ Widget courseItem(
                           ),
                         ),
                         SizedBox(height: 6),
-                        RichText(
-                          text: TextSpan(
-                            children: [
-                              TextSpan(
-                                text: 'End Date   :     ',
-                                style: 13.sp(),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            RichText(
+                              text: TextSpan(
+                                children: [
+                                  TextSpan(
+                                    text: 'End Date   :     ',
+                                    style: 13.sp(),
+                                  ),
+                                  TextSpan(
+                                    text: formatDate(course.endDate),
+                                    style: 14.sp(),
+                                  ),
+                                ],
                               ),
-                              TextSpan(
-                                text: formatDate(course.endDate),
-                                style: 14.sp(),
+                            ),
+                            Chip(
+                              padding: EdgeInsets.symmetric(
+                                horizontal: 1,
+                                vertical: 1,
                               ),
-                            ],
-                          ),
+                              backgroundColor: course.status
+                                  ? Colors.green
+                                  : Colors.red,
+                              label: Text(
+                                course.status ? 'Active' : 'Inactive',
+                                style: 13.sp(color: Colors.white),
+                              ),
+                            ),
+                          ],
                         ),
                       ],
                     ),

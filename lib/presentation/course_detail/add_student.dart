@@ -18,7 +18,7 @@ class AddStudent extends ConsumerStatefulWidget {
 class _AddStudentState extends ConsumerState<AddStudent> {
   final query = TextEditingController();
 
-  final List<StudentModel> selected = [];
+  final List<Student> selected = [];
   final List<int> selectedId = [];
   late int curretStuds;
   int count = 0;
@@ -39,14 +39,14 @@ class _AddStudentState extends ConsumerState<AddStudent> {
 
   @override
   Widget build(BuildContext context) {
-    final getStuState = ref.watch(getStudentProvider(query.text));
+    final getStuState = ref.watch(getJoinStudentProvider(query.text));
     void onChange(String? query) {
       setState(() {
         ref.read(getStudentProvider(query));
       });
     }
 
-    void onSelect(StudentModel st, BuildContext context) {
+    void onSelect(Student st, BuildContext context) {
       setState(() {
         if (selected.contains(st)) {
           selected.remove(st);
@@ -54,8 +54,15 @@ class _AddStudentState extends ConsumerState<AddStudent> {
           count--;
           curretStuds--;
         } else if (curretStuds >= widget.course.studentLimit) {
+          ScaffoldMessenger.of(context).clearSnackBars();
+
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Student Limit reach', style: 14.sp(color: Colors.white))),
+            SnackBar(
+              content: Text(
+                'Student Limit reach',
+                style: 14.sp(color: Colors.white),
+              ),
+            ),
           );
           return;
         } else {
@@ -67,7 +74,7 @@ class _AddStudentState extends ConsumerState<AddStudent> {
       });
     }
 
-    void onDeleted(StudentModel st) {
+    void onDeleted(Student st) {
       setState(() {
         selected.remove(st);
         selectedId.remove(st.id);
@@ -88,6 +95,8 @@ class _AddStudentState extends ConsumerState<AddStudent> {
       n.when(
         data: (_) async {
           final joinIds = List<int>.from(selectedId);
+          ScaffoldMessenger.of(context).clearSnackBars();
+
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               content: Text(
@@ -106,6 +115,8 @@ class _AddStudentState extends ConsumerState<AddStudent> {
           Navigator.pop(context);
         },
         error: (error, _) {
+          ScaffoldMessenger.of(context).clearSnackBars();
+
           ScaffoldMessenger.of(
             context,
           ).showSnackBar(SnackBar(content: Text(error.toString())));
@@ -201,15 +212,18 @@ class _AddStudentState extends ConsumerState<AddStudent> {
               return AlertDialog(
                 content: ConstrainedBox(
                   constraints: BoxConstraints(
-                    maxHeight: MediaQuery.of(context).size.height * 0.13,
-                    maxWidth: MediaQuery.of(context).size.width * 0.85,
+                    maxHeight: MediaQuery.of(context).size.height * 0.1,
+                    maxWidth: MediaQuery.of(context).size.width * 0.7,
                   ),
-                  child: Padding(
-                    padding: const EdgeInsets.all(8.0),
+                  child: Container(
+                    padding: EdgeInsets.symmetric(horizontal: 10),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
                     child: Column(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      mainAxisAlignment: MainAxisAlignment.end,
                       children: [
-                        Text(showMesg, style: 18.sp()),
+                        Text(showMesg, style: 15.sp()),
                         SizedBox(height: 10),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.center,
@@ -219,7 +233,7 @@ class _AddStudentState extends ConsumerState<AddStudent> {
                               onPressed: () {
                                 Navigator.pop(context);
                               },
-                              child: Text('Cancel', style: 14.sp()),
+                              child: Text('Cancel', style: 12.sp()),
                             ),
                             SizedBox(width: 15),
                             joinState.isLoading
@@ -251,7 +265,7 @@ class _AddStudentState extends ConsumerState<AddStudent> {
                                           },
                                     child: Text(
                                       'Confirm',
-                                      style: 14.sp(color: Colors.white),
+                                      style: 12.sp(color: Colors.white),
                                     ),
                                   ),
                           ],
@@ -273,7 +287,7 @@ class _AddStudentState extends ConsumerState<AddStudent> {
   }
 }
 
-Widget selectedStudent(StudentModel s, void Function(StudentModel) onDeleted) {
+Widget selectedStudent(Student s, void Function(Student) onDeleted) {
   return Chip(
     label: Text(s.name),
     labelStyle: 14.sp(),
@@ -286,10 +300,10 @@ Widget selectedStudent(StudentModel s, void Function(StudentModel) onDeleted) {
 }
 
 Widget student(
-  StudentModel s,
+  Student s,
   int index,
   BuildContext context,
-  void Function(StudentModel, BuildContext context) onSelect,
+  void Function(Student, BuildContext context) onSelect,
   List<int> selectedIds,
 ) {
   final isSelected = selectedIds.contains(s.id);
@@ -375,19 +389,27 @@ Widget appBar(CourseStuds c, int currentStuds, BuildContext context) {
               ),
               Padding(
                 padding: const EdgeInsets.only(left: 10, right: 10),
-                child: CircleAvatar(
-                  radius: 22,
-                  backgroundColor: Colors.black,
-                  child: RichText(
+                child: Chip(
+                  padding: EdgeInsets.symmetric(horizontal: 2),
+                  backgroundColor: Colors.green,
+                  label: RichText(
                     text: TextSpan(
                       children: [
                         TextSpan(
                           text: '${c.studentLimit.toString()}/',
-                          style: 16.sp(color: Colors.white),
+                          style: 16.sp(
+                            color: currentStuds == c.studentLimit
+                                ? Colors.black
+                                : Colors.white,
+                          ),
                         ),
                         TextSpan(
                           text: currentStuds.toString(),
-                          style: 14.sp(color: Colors.white),
+                          style: 14.sp(
+                            color: currentStuds == c.studentLimit
+                                ? Colors.black
+                                : Colors.white,
+                          ),
                         ),
                       ],
                     ),
