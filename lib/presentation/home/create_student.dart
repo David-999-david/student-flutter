@@ -74,10 +74,15 @@ class _CreateStudendState extends ConsumerState<CreateStudent> {
       n.when(
         data: (data) {
           clear();
-          ScaffoldMessenger.of(
-            context,
-          ).showSnackBar(SnackBar(content: Text('Create success')));
-          ref.read(getStudentProvider('').notifier).get('');
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(
+                'Create success',
+                style: 14.sp(color: Colors.white),
+              ),
+            ),
+          );
+          ref.read(getJoinStudentProvider('').notifier).get('');
           Navigator.pop(context);
         },
         error: (error, _) {

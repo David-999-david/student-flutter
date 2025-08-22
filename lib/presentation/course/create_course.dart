@@ -104,9 +104,9 @@ class _CreateCourseState extends ConsumerState<CreateCourse> {
     ref.listen(createCourseProvider, (p, n) {
       n.when(
         data: (data) {
-          ScaffoldMessenger.of(
-            context,
-          ).showSnackBar(SnackBar(content: Text('Create new course done!')));
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('Create new course done!', style: 14.sp(color: Colors.white))),
+          );
           clear();
           ref.invalidate(getCourseProvider);
           Navigator.push(
@@ -269,6 +269,7 @@ class _CreateCourseState extends ConsumerState<CreateCourse> {
                                   SnackBar(
                                     content: Text(
                                       'Start or End Date and Time missing',
+                                      style: 14.sp(color: Colors.white),
                                     ),
                                   ),
                                 );
@@ -278,6 +279,7 @@ class _CreateCourseState extends ConsumerState<CreateCourse> {
                                   SnackBar(
                                     content: Text(
                                       'Start Date must be before End Date',
+                                      style: 14.sp(color: Colors.white),
                                     ),
                                   ),
                                 );
@@ -288,6 +290,7 @@ class _CreateCourseState extends ConsumerState<CreateCourse> {
                                   SnackBar(
                                     content: Text(
                                       'End Date must be after Start Date',
+                                      style: 14.sp(color: Colors.white),
                                     ),
                                   ),
                                 );
@@ -338,7 +341,7 @@ Widget textField(
         filled: true,
         fillColor: Colors.white,
         hintText: hint,
-        hintStyle: 14.sp(),
+        hintStyle: 14.sp(color: Colors.grey),
         border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(8),
@@ -375,7 +378,7 @@ Widget limitNumField(
         filled: true,
         fillColor: Colors.white,
         hintText: hint,
-        hintStyle: 14.sp(),
+        hintStyle: 14.sp(color: Colors.grey),
         border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(8),
@@ -409,7 +412,7 @@ Widget studsNumField(
         filled: true,
         fillColor: Colors.white,
         hintText: hint,
-        hintStyle: 14.sp(),
+        hintStyle: 14.sp(color: Colors.grey),
         border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(8),

@@ -28,7 +28,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final getStuState = ref.watch(getStudentProvider(query.text));
+    final getStuState = ref.watch(getJoinStudentProvider(query.text));
 
     void onChange(String? query) {
       setState(() {
@@ -39,11 +39,17 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     ref.listen(deleteStudProvider, (p, n) {
       n.when(
         data: (_) {
-          ScaffoldMessenger.of(
-            context,
-          ).showSnackBar(SnackBar(content: Text('Remove success')));
-          ref.invalidate(getStudentProvider(''));
-          ref.invalidate(getCourseProvider(''));
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(
+                'Remove success',
+                style: 14.sp(color: Colors.white),
+              ),
+            ),
+          );
+          // ref.invalidate(getStudentProvider(query.text));
+          ref.invalidate(getCourseProvider);
+          ref.invalidate(getJoinStudentProvider(query.text));
         },
         error: (error, _) {
           ScaffoldMessenger.of(
@@ -138,7 +144,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                 return SliverFillRemaining(
                   child: Center(
                     child: Text(
-                      'No student for show at current',
+                      'No student for show',
                       style: 14.sp(color: Colors.white),
                     ),
                   ),
@@ -178,7 +184,7 @@ Widget studentSetting(IconData icon, String title, VoidCallback ontap) {
   );
 }
 
-Widget student(StudentModel s, int index, BuildContext context) {
+Widget student(Student s, int index, BuildContext context) {
   return Consumer(
     builder: (context, ref, child) {
       final deleteState = ref.watch(deleteStudProvider);
@@ -278,12 +284,15 @@ Widget student(StudentModel s, int index, BuildContext context) {
                                                   ),
                                                 ),
                                                 onPressed: () async {
+                                                  final courseIds = s.courses
+                                                      .map((c) => c.id)
+                                                      .toList();
                                                   await ref
                                                       .read(
                                                         deleteStudProvider
                                                             .notifier,
                                                       )
-                                                      .delete(s.id);
+                                                      .delete(s.id, courseIds);
                                                   Navigator.pop(diaContext);
                                                 },
                                                 child: Text(

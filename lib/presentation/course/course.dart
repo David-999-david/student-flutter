@@ -8,6 +8,7 @@ import 'package:student/presentation/course/course_state.dart';
 import 'package:student/presentation/course/edit_course.dart';
 import 'package:student/presentation/course_detail/course_detail.dart';
 import 'package:student/presentation/home/home.dart';
+import 'package:student/presentation/home/home_state.dart';
 
 class Course extends ConsumerStatefulWidget {
   const Course({super.key});
@@ -35,10 +36,16 @@ class _CourseState extends ConsumerState<Course> {
     ref.listen(deleteCourseProvider, (p, n) {
       n.when(
         data: (_) {
-          ScaffoldMessenger.of(
-            context,
-          ).showSnackBar(SnackBar(content: Text('Delete course done')));
-          ref.invalidate(getCourseProvider);
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(
+                'Delete course done',
+                style: 14.sp(color: Colors.white),
+              ),
+            ),
+          );
+          ref.invalidate(getCourseProvider(''));
+          ref.invalidate(getJoinStudentProvider(''));
         },
         error: (error, _) {
           ScaffoldMessenger.of(
@@ -54,7 +61,7 @@ class _CourseState extends ConsumerState<Course> {
       body: CustomScrollView(
         slivers: [
           SliverPadding(
-            padding: EdgeInsets.only(right: 30, left: 30, top: 30, bottom: 10),
+            padding: EdgeInsets.only(right: 30, left: 30, top: 50, bottom: 10),
             sliver: SliverToBoxAdapter(
               child: searchField(query, 'Search', onChanged),
             ),
@@ -209,6 +216,7 @@ Widget courseItem(
                                                           .notifier,
                                                     )
                                                     .delete(course.id);
+
                                                 Navigator.pop(dialogContext);
                                               },
                                               child: Text(

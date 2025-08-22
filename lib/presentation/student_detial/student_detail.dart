@@ -10,7 +10,7 @@ import 'package:student/presentation/student_detial/add_course.dart';
 class StudentDetail extends ConsumerStatefulWidget {
   const StudentDetail({super.key, required this.s});
 
-  final StudentModel s;
+  final Student s;
 
   @override
   ConsumerState<ConsumerStatefulWidget> createState() => _StudentDetailState();
@@ -48,6 +48,7 @@ class _StudentDetailState extends ConsumerState<StudentDetail> {
                                   SnackBar(
                                     content: Text(
                                       'This Student is Inactive, Can\'t join with course',
+                                      style: 14.sp(),
                                     ),
                                   ),
                                 )

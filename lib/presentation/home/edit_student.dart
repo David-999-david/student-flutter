@@ -8,7 +8,7 @@ import 'package:student/presentation/home/home_state.dart';
 class EditStudent extends ConsumerStatefulWidget {
   const EditStudent({super.key, required this.currentStud});
 
-  final StudentModel currentStud;
+  final Student currentStud;
 
   @override
   ConsumerState<ConsumerStatefulWidget> createState() => _EditStudentState();
@@ -85,9 +85,9 @@ class _EditStudentState extends ConsumerState<EditStudent> {
     ref.listen(editStudentProvider, (p, n) {
       n.when(
         data: (data) {
-          ScaffoldMessenger.of(
-            context,
-          ).showSnackBar(SnackBar(content: Text('Updated success')));
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('Updated success', style: 14.sp(color: Colors.white))),
+          );
           ref.read(getStudentProvider('').notifier).get('');
           Navigator.pop(context);
         },
@@ -174,12 +174,12 @@ class _EditStudentState extends ConsumerState<EditStudent> {
                   ),
                   editState.isLoading
                       ? Center(
-                        child: SizedBox(
+                          child: SizedBox(
                             height: 30,
                             width: 30,
                             child: CircularProgressIndicator(),
                           ),
-                      )
+                        )
                       : Center(
                           child: ElevatedButton(
                             style: ElevatedButton.styleFrom(

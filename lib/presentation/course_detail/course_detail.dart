@@ -29,13 +29,14 @@ class _CourseDetailState extends ConsumerState<CourseDetail> {
     ref.listen(cancelJoinProvider, (p, n) {
       n.when(
         data: (ids) {
-          ScaffoldMessenger.of(
-            context,
-          ).showSnackBar(SnackBar(content: Text('Cancel Join success')));
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('Cancel Join success', style: 14.sp(color: Colors.white))),
+          );
           if (ids != null) {
             ref.invalidate(getIdCourseProvider(widget.c.id));
             ref.invalidate(getCourseProvider(''));
             ref.invalidate(getIdStudentProvider(ids.studentId));
+            ref.invalidate(getJoinStudentProvider(''));
           }
         },
         error: (error, _) {
@@ -72,6 +73,7 @@ class _CourseDetailState extends ConsumerState<CourseDetail> {
                                   SnackBar(
                                     content: Text(
                                       'This course is Inactive, for add students please update to Active',
+                                      style: 14.sp(color: Colors.white),
                                     ),
                                   ),
                                 )

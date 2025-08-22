@@ -34,9 +34,9 @@ class _AddCourseState extends ConsumerState<AddCourse> {
     ref.listen(deleteCourseProvider, (p, n) {
       n.when(
         data: (_) {
-          ScaffoldMessenger.of(
-            context,
-          ).showSnackBar(SnackBar(content: Text('Delete course done')));
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('Delete course done', style: 14.sp())),
+          );
           ref.invalidate(getCourseProvider);
         },
         error: (error, _) {

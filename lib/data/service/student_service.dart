@@ -85,9 +85,12 @@ class StudentService {
     }
   }
 
-  Future<void> delete(int id) async {
+  Future<void> delete(int id, List<int?> courseIds) async {
     try {
-      final response = await _dio.delete('${ApiUrl.student}/$id');
+      final response = await _dio.delete(
+        '${ApiUrl.student}/$id',
+        data: {"courseIds": courseIds},
+      );
 
       final status = response.statusCode!;
 
@@ -111,6 +114,30 @@ class StudentService {
       if (status >= 200 && status < 300) {
         final data = response.data['data'];
         return Student.fromJson(data);
+      } else {
+        throw Exception(
+          'Error => ${response.data['error']}, ${response.statusCode}',
+        );
+      }
+    } on DioException catch (e) {
+      throw Exception(
+        '${e.response!.data['detail']}, ${e.response!.data['error']}',
+      );
+    }
+  }
+
+  Future<List<Student>> getByQuery(String? query) async {
+    try {
+      final response = await _dio.get(
+        ApiUrl.student,
+        queryParameters: {"q": query},
+      );
+
+      final status = response.statusCode!;
+
+      if (status >= 200 && status < 300) {
+        final data = response.data['data'] as List<dynamic>;
+        return data.map((s) => Student.fromJson(s)).toList();
       } else {
         throw Exception(
           'Error => ${response.data['error']}, ${response.statusCode}',

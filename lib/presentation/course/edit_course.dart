@@ -119,9 +119,9 @@ class _EditCourseState extends ConsumerState<EditCourse> {
     ref.listen(editCourseProvider, (p, n) {
       n.when(
         data: (_) {
-          ScaffoldMessenger.of(
-            context,
-          ).showSnackBar(SnackBar(content: Text('Update course done!')));
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('Update course done!', style: 14.sp(color: Colors.white))),
+          );
           clear();
           ref.invalidate(getCourseProvider);
           Navigator.pop(context);
@@ -264,7 +264,7 @@ class _EditCourseState extends ConsumerState<EditCourse> {
                   updateState.isLoading
                       ? Center(child: CircularProgressIndicator())
                       : Center(
-                        child: ElevatedButton(
+                          child: ElevatedButton(
                             style: ElevatedButton.styleFrom(
                               padding: EdgeInsets.symmetric(
                                 horizontal: 10,
@@ -283,6 +283,7 @@ class _EditCourseState extends ConsumerState<EditCourse> {
                                   SnackBar(
                                     content: Text(
                                       'Start or End Date and Time missing',
+                                      style: 14.sp(color: Colors.white),
                                     ),
                                   ),
                                 );
@@ -292,6 +293,7 @@ class _EditCourseState extends ConsumerState<EditCourse> {
                                   SnackBar(
                                     content: Text(
                                       'Start Date must be before End Date',
+                                      style: 14.sp(color: Colors.white),
                                     ),
                                   ),
                                 );
@@ -302,6 +304,7 @@ class _EditCourseState extends ConsumerState<EditCourse> {
                                   SnackBar(
                                     content: Text(
                                       'End Date must be after Start Date',
+                                      style: 14.sp(color: Colors.white),
                                     ),
                                   ),
                                 );
@@ -324,7 +327,7 @@ class _EditCourseState extends ConsumerState<EditCourse> {
                               style: 14.sp(color: Colors.white),
                             ),
                           ),
-                      ),
+                        ),
                 ],
               ),
             ),

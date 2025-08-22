@@ -54,9 +54,9 @@ class _AddStudentState extends ConsumerState<AddStudent> {
           count--;
           curretStuds--;
         } else if (curretStuds >= widget.course.studentLimit) {
-          ScaffoldMessenger.of(
-            context,
-          ).showSnackBar(SnackBar(content: Text('Student Limit reach')));
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('Student Limit reach', style: 14.sp(color: Colors.white))),
+          );
           return;
         } else {
           selected.add(st);
@@ -90,7 +90,10 @@ class _AddStudentState extends ConsumerState<AddStudent> {
           final joinIds = List<int>.from(selectedId);
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text('$count Students successfully Join this course'),
+              content: Text(
+                '$count Students successfully Join this course',
+                style: 14.sp(color: Colors.white),
+              ),
             ),
           );
           clear();
@@ -99,6 +102,7 @@ class _AddStudentState extends ConsumerState<AddStudent> {
           for (final id in joinIds) {
             ref.invalidate(getIdStudentProvider(id));
           }
+          ref.invalidate(getJoinStudentProvider(''));
           Navigator.pop(context);
         },
         error: (error, _) {

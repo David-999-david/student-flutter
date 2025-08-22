@@ -76,20 +76,20 @@ final deleteStudProvider =
 class DeleteStudNotifier extends StateNotifier<AsyncValue<void>> {
   DeleteStudNotifier() : super(AsyncValue.data(null));
 
-  Future<void> delete(int id) async {
+  Future<void> delete(int id, List<int?> courseIds) async {
     state = AsyncValue.loading();
-    state = await AsyncValue.guard(() => StudentService().delete(id));
+    state = await AsyncValue.guard(
+      () => StudentService().delete(id, courseIds),
+    );
   }
 }
 
 final onDeleteProvider = StateProvider.family<bool, int>((ref, id) => false);
 
-final getIdStudentProvider =
-    StateNotifierProvider.family<
-      GetIdStudentNotifier,
-      AsyncValue<Student>,
-      int
-    >((ref, id) => GetIdStudentNotifier(ref, id));
+final getIdStudentProvider = StateNotifierProvider.autoDispose
+    .family<GetIdStudentNotifier, AsyncValue<Student>, int>(
+      (ref, id) => GetIdStudentNotifier(ref, id),
+    );
 
 class GetIdStudentNotifier extends StateNotifier<AsyncValue<Student>> {
   GetIdStudentNotifier(this.ref, this.id) : super(AsyncValue.loading()) {
@@ -102,5 +102,26 @@ class GetIdStudentNotifier extends StateNotifier<AsyncValue<Student>> {
   Future<void> get(int id) async {
     state = AsyncValue.loading();
     state = await AsyncValue.guard(() => StudentService().getById(id));
+  }
+}
+
+final getJoinStudentProvider =
+    StateNotifierProvider.family<
+      GetJoinStudentNotifier,
+      AsyncValue<List<Student>>,
+      String?
+    >((ref, query) => GetJoinStudentNotifier(ref, query));
+
+class GetJoinStudentNotifier extends StateNotifier<AsyncValue<List<Student>>> {
+  GetJoinStudentNotifier(this.ref, this.query) : super(AsyncValue.loading()) {
+    get(query);
+  }
+
+  final Ref ref;
+  final String? query;
+
+  Future<void> get(String? query) async {
+    state = AsyncValue.loading();
+    state = await AsyncValue.guard(() => StudentService().getByQuery(query));
   }
 }
