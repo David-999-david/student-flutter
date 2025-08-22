@@ -83,3 +83,24 @@ class DeleteStudNotifier extends StateNotifier<AsyncValue<void>> {
 }
 
 final onDeleteProvider = StateProvider.family<bool, int>((ref, id) => false);
+
+final getIdStudentProvider =
+    StateNotifierProvider.family<
+      GetIdStudentNotifier,
+      AsyncValue<Student>,
+      int
+    >((ref, id) => GetIdStudentNotifier(ref, id));
+
+class GetIdStudentNotifier extends StateNotifier<AsyncValue<Student>> {
+  GetIdStudentNotifier(this.ref, this.id) : super(AsyncValue.loading()) {
+    get(id);
+  }
+
+  final Ref ref;
+  final int id;
+
+  Future<void> get(int id) async {
+    state = AsyncValue.loading();
+    state = await AsyncValue.guard(() => StudentService().getById(id));
+  }
+}

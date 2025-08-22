@@ -4,23 +4,24 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:student/app_text_style.dart';
 import 'package:intl/intl.dart';
 import 'package:student/data/model/course_model.dart';
-import 'package:student/presentation/bottom_nav/bottom_nav.dart';
 import 'package:student/presentation/course/course_state.dart';
 import 'package:student/presentation/home/create_student.dart';
 
-class CreateCourse extends ConsumerStatefulWidget {
-  const CreateCourse({super.key});
+class EditCourse extends ConsumerStatefulWidget {
+  const EditCourse({super.key, required this.currentCour});
+
+  final CourseModel currentCour;
 
   @override
-  ConsumerState<ConsumerStatefulWidget> createState() => _CreateCourseState();
+  ConsumerState<ConsumerStatefulWidget> createState() => _EditCourseState();
 }
 
-class _CreateCourseState extends ConsumerState<CreateCourse> {
+class _EditCourseState extends ConsumerState<EditCourse> {
   final key = GlobalKey<FormState>();
 
-  final name = TextEditingController();
-  final descp = TextEditingController();
-  final limit = TextEditingController();
+  late final TextEditingController name;
+  late final TextEditingController descp;
+  late final TextEditingController limit;
   DateTime? startDate;
   DateTime? endDate;
 
@@ -71,6 +72,20 @@ class _CreateCourseState extends ConsumerState<CreateCourse> {
   }
 
   @override
+  void initState() {
+    name = TextEditingController(text: widget.currentCour.name);
+    descp = TextEditingController(text: widget.currentCour.description);
+    limit = TextEditingController(
+      text: widget.currentCour.studentLimit.toString(),
+    );
+    startDate = widget.currentCour.startDate;
+    endDate = widget.currentCour.endDate;
+    selected = widget.currentCour.status ? 'Active' : 'Inactive';
+    choice = widget.currentCour.status;
+    super.initState();
+  }
+
+  @override
   void dispose() {
     name.dispose();
     descp.dispose();
@@ -92,7 +107,7 @@ class _CreateCourseState extends ConsumerState<CreateCourse> {
 
   @override
   Widget build(BuildContext context) {
-    final createState = ref.watch(createCourseProvider);
+    final updateState = ref.watch(editCourseProvider);
 
     String? validateLimit(String? value) {
       final limitvalue = int.tryParse((value ?? '').trim());
@@ -101,22 +116,15 @@ class _CreateCourseState extends ConsumerState<CreateCourse> {
       return null;
     }
 
-    ref.listen(createCourseProvider, (p, n) {
+    ref.listen(editCourseProvider, (p, n) {
       n.when(
-        data: (data) {
+        data: (_) {
           ScaffoldMessenger.of(
             context,
-          ).showSnackBar(SnackBar(content: Text('Create new course done!')));
+          ).showSnackBar(SnackBar(content: Text('Update course done!')));
           clear();
           ref.invalidate(getCourseProvider);
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) {
-                return BottomNav(index: 1);
-              },
-            ),
-          );
+          Navigator.pop(context);
         },
         error: (error, _) {
           ScaffoldMessenger.of(
@@ -130,7 +138,7 @@ class _CreateCourseState extends ConsumerState<CreateCourse> {
     return Scaffold(
       backgroundColor: Colors.blueGrey,
       appBar: AppBar(
-        title: Text('Create Course', style: 20.sp(color: Colors.white)),
+        title: Text('Edit Course', style: 20.sp(color: Colors.white)),
         centerTitle: true,
         backgroundColor: Colors.grey,
       ),
@@ -144,16 +152,23 @@ class _CreateCourseState extends ConsumerState<CreateCourse> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Text('Course-name', style: 15.sp(color: Colors.white)),
+                  Text('Course-name', style: 16.sp(color: Colors.white)),
                   textField(name, 'Course-name', 'Course-name', 1),
-                  Text('Description', style: 15.sp(color: Colors.white)),
+                  Text('Description', style: 16.sp(color: Colors.white)),
                   textField(descp, 'Descritpion', 'Description', 3),
-                  Row(
-                    children: [
-                      Text('Student-limit', style: 15.sp(color: Colors.white)),
-                      SizedBox(width: 75),
-                      Text('Status', style: 15.sp(color: Colors.white)),
-                    ],
+                  SizedBox(
+                    height: 20,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Student-limit',
+                          style: 16.sp(color: Colors.white),
+                        ),
+                        SizedBox(width: 70),
+                        Text('Status', style: 16.sp(color: Colors.white)),
+                      ],
+                    ),
                   ),
                   SizedBox(
                     height: 80,
@@ -172,7 +187,6 @@ class _CreateCourseState extends ConsumerState<CreateCourse> {
                       ],
                     ),
                   ),
-
                   SizedBox(
                     height: 40,
                     child: Row(
@@ -247,10 +261,10 @@ class _CreateCourseState extends ConsumerState<CreateCourse> {
                     ),
                   ),
                   SizedBox(height: 20),
-                  createState.isLoading
+                  updateState.isLoading
                       ? Center(child: CircularProgressIndicator())
                       : Center(
-                          child: ElevatedButton(
+                        child: ElevatedButton(
                             style: ElevatedButton.styleFrom(
                               padding: EdgeInsets.symmetric(
                                 horizontal: 10,
@@ -302,15 +316,15 @@ class _CreateCourseState extends ConsumerState<CreateCourse> {
                                 status: choice!,
                               );
                               await ref
-                                  .read(createCourseProvider.notifier)
-                                  .create(course);
+                                  .read(editCourseProvider.notifier)
+                                  .update(widget.currentCour.id, course);
                             },
                             child: Text(
                               'Confirm',
                               style: 14.sp(color: Colors.white),
                             ),
                           ),
-                        ),
+                      ),
                 ],
               ),
             ),
@@ -328,7 +342,7 @@ Widget textField(
   int maxline,
 ) {
   return Padding(
-    padding: const EdgeInsets.symmetric(vertical: 13),
+    padding: const EdgeInsets.symmetric(vertical: 10),
     child: TextFormField(
       controller: c,
       maxLines: maxline,

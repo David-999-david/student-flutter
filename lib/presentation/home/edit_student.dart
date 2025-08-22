@@ -102,7 +102,11 @@ class _EditStudentState extends ConsumerState<EditStudent> {
 
     return Scaffold(
       backgroundColor: Colors.blueGrey,
-      appBar: AppBar(backgroundColor: Colors.blueGrey),
+      appBar: AppBar(
+        title: Text('Edit student', style: 20.sp(color: Colors.white)),
+        centerTitle: true,
+        backgroundColor: Colors.grey,
+      ),
       body: Padding(
         padding: EdgeInsets.symmetric(horizontal: 30),
         child: Center(
@@ -110,27 +114,31 @@ class _EditStudentState extends ConsumerState<EditStudent> {
             key: key,
             child: SingleChildScrollView(
               child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
+                  Text('Name', style: 15.sp(color: Colors.white)),
                   fillfield(name, 'Name', 'Name', TextInputType.text, 1),
+                  Text('Email', style: 15.sp(color: Colors.white)),
                   emailFillfield(
                     email,
-                    'Email',
+                    'example@gmail.com',
                     'Email',
                     TextInputType.emailAddress,
                     1,
                   ),
+                  Text('Phone', style: 15.sp(color: Colors.white)),
                   phoneFillfield(
                     phone,
-                    'Phone number',
+                    '78788***',
                     'Phone number',
                     TextInputType.number,
                     1,
                   ),
+                  Text('Address', style: 15.sp(color: Colors.white)),
                   fillfield(
                     address,
-                    'Address',
+                    'Fill you address',
                     'Address',
                     TextInputType.text,
                     3,
@@ -165,41 +173,45 @@ class _EditStudentState extends ConsumerState<EditStudent> {
                     ],
                   ),
                   editState.isLoading
-                      ? SizedBox(
-                          height: 30,
-                          width: 30,
-                          child: CircularProgressIndicator(),
-                        )
-                      : ElevatedButton(
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.blue,
-                            padding: EdgeInsets.symmetric(
-                              horizontal: 10,
-                              vertical: 3,
-                            ),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(8),
-                            ),
-                            side: BorderSide(color: Colors.black),
+                      ? Center(
+                        child: SizedBox(
+                            height: 30,
+                            width: 30,
+                            child: CircularProgressIndicator(),
                           ),
-                          onPressed: () {
-                            // if (!key.currentState!.validate()) return;
-                            final student = StudentUpdate(
-                              name: name.text.trim(),
-                              email: email.text.trim(),
-                              phone: phone.text.trim(),
-                              address: address.text.trim(),
-                              genderId: selectedGender!.id,
-                              status: choice!,
-                            );
-                            ref
-                                .read(editStudentProvider.notifier)
-                                .edit(widget.currentStud.id, student);
-                          },
-                          child: Text(
-                            'Confirm',
-                            style: 13.sp(color: Colors.white),
-                          ),  
+                      )
+                      : Center(
+                          child: ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.blue,
+                              padding: EdgeInsets.symmetric(
+                                horizontal: 10,
+                                vertical: 3,
+                              ),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                              side: BorderSide(color: Colors.black),
+                            ),
+                            onPressed: () {
+                              if (!key.currentState!.validate()) return;
+                              final student = StudentUpdate(
+                                name: name.text.trim(),
+                                email: email.text.trim(),
+                                phone: phone.text.trim(),
+                                address: address.text.trim(),
+                                genderId: selectedGender!.id,
+                                status: choice!,
+                              );
+                              ref
+                                  .read(editStudentProvider.notifier)
+                                  .edit(widget.currentStud.id, student);
+                            },
+                            child: Text(
+                              'Confirm',
+                              style: 13.sp(color: Colors.white),
+                            ),
+                          ),
                         ),
                 ],
               ),

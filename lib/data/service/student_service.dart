@@ -101,4 +101,25 @@ class StudentService {
       throw Exception(e.message);
     }
   }
+
+  Future<Student> getById(int id) async {
+    try {
+      final response = await _dio.get('${ApiUrl.student}/$id');
+
+      final status = response.statusCode!;
+
+      if (status >= 200 && status < 300) {
+        final data = response.data['data'];
+        return Student.fromJson(data);
+      } else {
+        throw Exception(
+          'Error => ${response.data['error']}, ${response.statusCode}',
+        );
+      }
+    } on DioException catch (e) {
+      throw Exception(
+        '${e.response!.data['detail']}, ${e.response!.data['error']}',
+      );
+    }
+  }
 }

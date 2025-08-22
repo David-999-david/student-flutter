@@ -1,0 +1,260 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:intl/intl.dart';
+import 'package:student/app_text_style.dart';
+import 'package:student/data/model/student_model.dart';
+import 'package:student/presentation/home/home_state.dart';
+import 'package:student/presentation/student_detial/add_course.dart';
+
+class StudentDetail extends ConsumerStatefulWidget {
+  const StudentDetail({super.key, required this.s});
+
+  final StudentModel s;
+
+  @override
+  ConsumerState<ConsumerStatefulWidget> createState() => _StudentDetailState();
+}
+
+class _StudentDetailState extends ConsumerState<StudentDetail> {
+  String formated(DateTime? date) =>
+      date == null ? 'Not set' : DateFormat('yyyy-MM-dd h:mm a').format(date);
+  @override
+  Widget build(BuildContext context) {
+    final getDetailState = ref.watch(getIdStudentProvider(widget.s.id));
+    final detail = getDetailState.valueOrNull;
+    return Scaffold(
+      backgroundColor: Colors.blueGrey,
+      body: CustomScrollView(
+        slivers: [
+          SliverAppBar(
+            backgroundColor: Colors.grey,
+            actions: [
+              Padding(
+                padding: const EdgeInsets.only(right: 10, bottom: 5),
+                child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    padding: EdgeInsets.symmetric(horizontal: 10),
+                    backgroundColor: Colors.white,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                  ),
+                  onPressed: detail == null
+                      ? null
+                      : () {
+                          !widget.s.status
+                              ? ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                    content: Text(
+                                      'This Student is Inactive, Can\'t join with course',
+                                    ),
+                                  ),
+                                )
+                              : Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) {
+                                      return AddCourse();
+                                    },
+                                  ),
+                                );
+                        },
+                  child: Text('ADD Course', style: 12.sp()),
+                ),
+              ),
+            ],
+          ),
+          getDetailState.when(
+            error: (error, _) {
+              return SliverFillRemaining(
+                child: Center(child: Text(error.toString())),
+              );
+            },
+            loading: () {
+              return SliverFillRemaining(
+                child: Center(child: CircularProgressIndicator()),
+              );
+            },
+            data: (detail) {
+              final students = detail.courses;
+              if (students.isEmpty) {
+                return SliverPadding(
+                  padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                  sliver: SliverList(
+                    delegate: SliverChildListDelegate([
+                      studentDetail(detail, formated),
+                      Padding(
+                        padding: EdgeInsets.symmetric(vertical: 20),
+                        child: Center(
+                          child: Text(
+                            'No course current, Let join a course!',
+                            style: 15.sp(color: Colors.white),
+                          ),
+                        ),
+                      ),
+                    ]),
+                  ),
+                );
+              }
+              return SliverPadding(
+                padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                sliver: SliverList.builder(
+                  itemCount: 1 + students.length,
+                  itemBuilder: (context, index) {
+                    if (index == 0) {
+                      return studentDetail(detail, formated);
+                    }
+                    final s = students[index - 1];
+                    return courseForStudent(s, context, index);
+                  },
+                ),
+              );
+            },
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+Widget studentDetail(Student s, String Function(DateTime?) formatDate) {
+  return Padding(
+    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 15),
+    child: Container(
+      padding: EdgeInsets.only(left: 14, right: 14, bottom: 10, top: 5),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(8),
+        border: Border.all(color: Colors.black),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(s.name, style: 16.sp()),
+              Text(s.status ? 'Active' : 'Inactive', style: 14.sp()),
+            ],
+          ),
+          SizedBox(height: 5),
+          Text(s.email, style: 13.sp()),
+          SizedBox(height: 5),
+          Text(s.address, style: 13.sp()),
+          SizedBox(height: 5),
+          Text(s.phone, style: 13.sp()),
+          SizedBox(height: 5),
+          Text(s.gender, style: 13.sp()),
+        ],
+      ),
+    ),
+  );
+}
+
+Widget courseForStudent(CourseForStud c, BuildContext context, int index) {
+  return Padding(
+    padding: const EdgeInsets.symmetric(vertical: 5),
+    child: Slidable(
+      endActionPane: ActionPane(
+        motion: DrawerMotion(),
+        extentRatio: 0.34,
+        children: [
+          SlidableAction(
+            onPressed: (_) {
+              showDialog(
+                context: context,
+                builder: (BuildContext diaContext) {
+                  return AlertDialog(
+                    content: ConstrainedBox(
+                      constraints: BoxConstraints(
+                        maxHeight: MediaQuery.of(context).size.height * 0.1,
+                        maxWidth: MediaQuery.of(context).size.width * 0.7,
+                      ),
+                      child: Container(
+                        padding: EdgeInsets.symmetric(horizontal: 10),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(14),
+                        ),
+                        child: Center(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            children: [
+                              Text(
+                                'Are you sure want to delete?',
+                                style: 15.sp(),
+                              ),
+                              SizedBox(height: 15),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  TextButton(
+                                    onPressed: () {
+                                      Navigator.pop(context);
+                                    },
+                                    child: Text('Cancel', style: 12.sp()),
+                                  ),
+                                  ElevatedButton(
+                                    style: ElevatedButton.styleFrom(
+                                      padding: EdgeInsets.symmetric(
+                                        horizontal: 5,
+                                        vertical: 2,
+                                      ),
+                                      backgroundColor: Colors.red,
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(8),
+                                      ),
+                                    ),
+                                    onPressed: () async {
+                                      // await ref
+                                      //     .read(deleteStudProvider.notifier)
+                                      //     .delete(s.id);
+                                      // Navigator.pop(diaContext);
+                                    },
+                                    child: Text(
+                                      'Delete',
+                                      style: 12.sp(color: Colors.white),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                  );
+                },
+              );
+            },
+            backgroundColor: Colors.red,
+            foregroundColor: Colors.white,
+            icon: Icons.delete,
+            padding: EdgeInsets.symmetric(horizontal: 5),
+            borderRadius: BorderRadius.circular(8),
+          ),
+        ],
+      ),
+      child: Container(
+        padding: EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+        width: double.infinity,
+        decoration: BoxDecoration(
+          color: Colors.white,
+          border: Border.all(color: Colors.black),
+          borderRadius: BorderRadius.circular(8),
+        ),
+        child: Row(
+          children: [
+            CircleAvatar(
+              backgroundColor: Colors.black,
+              radius: 10,
+              child: Text(index.toString(), style: 14.sp(color: Colors.white)),
+            ),
+            SizedBox(width: 15),
+            Text(c.name, style: 15.sp(color: Colors.black)),
+          ],
+        ),
+      ),
+    ),
+  );
+}

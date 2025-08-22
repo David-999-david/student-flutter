@@ -27,8 +27,8 @@ class _BottomNavState extends ConsumerState<BottomNav> {
           ref.read(bottomProvider(widget.index).notifier).onget(value);
         },
         items: [
-          BottomNavigationBarItem(icon: Icon(Icons.book), label: 'Home'),
           BottomNavigationBarItem(icon: Icon(Icons.people), label: 'Student'),
+          BottomNavigationBarItem(icon: Icon(Icons.book), label: 'Course'),
         ],
       ),
     );

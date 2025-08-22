@@ -91,7 +91,11 @@ class _CreateStudendState extends ConsumerState<CreateStudent> {
 
     return Scaffold(
       backgroundColor: Colors.blueGrey,
-      appBar: AppBar(backgroundColor: Colors.blueGrey),
+      appBar: AppBar(
+        title: Text('Create Student', style: 20.sp(color: Colors.white)),
+        centerTitle: true,
+        backgroundColor: Colors.grey,
+      ),
       body: Padding(
         padding: EdgeInsets.symmetric(horizontal: 30),
         child: Center(
@@ -99,27 +103,31 @@ class _CreateStudendState extends ConsumerState<CreateStudent> {
             key: key,
             child: SingleChildScrollView(
               child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
+                  Text('Name', style: 15.sp(color: Colors.white)),
                   fillfield(name, 'Name', 'Name', TextInputType.text, 1),
+                  Text('Email', style: 15.sp(color: Colors.white)),
                   emailFillfield(
                     email,
-                    'Email',
+                    'example@gmail.com',
                     'Email',
                     TextInputType.emailAddress,
                     1,
                   ),
+                  Text('Phone', style: 15.sp(color: Colors.white)),
                   phoneFillfield(
                     phone,
-                    'Phone number',
+                    '9889****',
                     'Phone number',
                     TextInputType.number,
                     1,
                   ),
+                  Text('Address', style: 15.sp(color: Colors.white)),
                   fillfield(
                     address,
-                    'Address',
+                    'Fill you address...',
                     'Address',
                     TextInputType.text,
                     3,
@@ -159,35 +167,37 @@ class _CreateStudendState extends ConsumerState<CreateStudent> {
                           width: 30,
                           child: CircularProgressIndicator(),
                         )
-                      : ElevatedButton(
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.blue,
-                            padding: EdgeInsets.symmetric(
-                              horizontal: 10,
-                              vertical: 3,
+                      : Center(
+                          child: ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.blue,
+                              padding: EdgeInsets.symmetric(
+                                horizontal: 10,
+                                vertical: 3,
+                              ),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                              side: BorderSide(color: Colors.black),
                             ),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(8),
+                            onPressed: () {
+                              if (!key.currentState!.validate()) return;
+                              final student = InsertStudent(
+                                name: name.text.trim(),
+                                email: email.text.trim(),
+                                phone: phone.text.trim(),
+                                address: address.text.trim(),
+                                genderId: selectedGender!.id,
+                                status: choice!,
+                              );
+                              ref
+                                  .read(createStudentProvider.notifier)
+                                  .insert(student);
+                            },
+                            child: Text(
+                              'Confirm',
+                              style: 13.sp(color: Colors.white),
                             ),
-                            side: BorderSide(color: Colors.black),
-                          ),
-                          onPressed: () {
-                            if (!key.currentState!.validate()) return;
-                            final student = InsertStudent(
-                              name: name.text.trim(),
-                              email: email.text.trim(),
-                              phone: phone.text.trim(),
-                              address: address.text.trim(),
-                              genderId: selectedGender!.id,
-                              status: choice!,
-                            );
-                            ref
-                                .read(createStudentProvider.notifier)
-                                .insert(student);
-                          },
-                          child: Text(
-                            'Confirm',
-                            style: 13.sp(color: Colors.white),
                           ),
                         ),
                 ],
@@ -218,7 +228,7 @@ Widget fillfield(
         filled: true,
         fillColor: Colors.white,
         hintText: hint,
-        hintStyle: 14.sp(),
+        hintStyle: 14.sp(color: Colors.grey),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(8),
           borderSide: BorderSide(color: Colors.black),
@@ -254,7 +264,7 @@ Widget emailFillfield(
         filled: true,
         fillColor: Colors.white,
         hintText: hint,
-        hintStyle: 14.sp(),
+        hintStyle: 14.sp(color: Colors.grey),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(8),
           borderSide: BorderSide(color: Colors.black),
@@ -291,7 +301,7 @@ Widget phoneFillfield(
         filled: true,
         fillColor: Colors.white,
         hintText: hint,
-        hintStyle: 14.sp(),
+        hintStyle: 14.sp(color: Colors.grey),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(8),
           borderSide: BorderSide(color: Colors.black),
@@ -361,10 +371,12 @@ Widget genderDropdown(
             );
           },
           loadingBuilder: (context, searchEntry) {
-            return SizedBox(
-              height: 30,
-              width: 30,
-              child: CircularProgressIndicator(),
+            return Center(
+              child: SizedBox(
+                height: 30,
+                width: 30,
+                child: CircularProgressIndicator(),
+              ),
             );
           },
           emptyBuilder: (context, searchEntry) {
