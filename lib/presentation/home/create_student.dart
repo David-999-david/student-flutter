@@ -78,9 +78,17 @@ class _CreateStudendState extends ConsumerState<CreateStudent> {
 
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text(
-                'Create success',
-                style: 14.sp(color: Colors.white),
+              content: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text('Create success', style: 14.sp(color: Colors.white)),
+                  Chip(
+                    side: BorderSide(color: Colors.black),
+                    padding: EdgeInsets.symmetric(horizontal: 2),
+                    backgroundColor: Colors.green,
+                    label: Text('Success', style: 14.sp(color: Colors.white)),
+                  ),
+                ],
               ),
             ),
           );
@@ -99,7 +107,7 @@ class _CreateStudendState extends ConsumerState<CreateStudent> {
     });
 
     return Scaffold(
-      backgroundColor: Colors.blueGrey,
+      backgroundColor: Color(0xff304352),
       appBar: AppBar(
         title: Text('Create Student', style: 20.sp(color: Colors.white)),
         centerTitle: true,

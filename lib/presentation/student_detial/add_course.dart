@@ -6,6 +6,7 @@ import 'package:student/data/model/course_model.dart';
 import 'package:student/data/model/student_model.dart';
 import 'package:student/presentation/course/course_state.dart';
 import 'package:student/presentation/home/home.dart';
+import 'package:student/presentation/home/home_state.dart';
 
 class AddCourse extends ConsumerStatefulWidget {
   const AddCourse({super.key, required this.s});
@@ -38,9 +39,20 @@ class _AddCourseState extends ConsumerState<AddCourse> {
         ScaffoldMessenger.of(context).clearSnackBars();
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text(
-              'This course limit full!',
-              style: 14.sp(color: Colors.white),
+            content: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  'This course limit full!',
+                  style: 14.sp(color: Colors.white),
+                ),
+                Chip(
+                  side: BorderSide(color: Colors.black),
+                  padding: EdgeInsets.symmetric(horizontal: 2),
+                  backgroundColor: Colors.deepOrangeAccent,
+                  label: Text('Warning', style: 14.sp(color: Colors.white)),
+                ),
+              ],
             ),
           ),
         );
@@ -55,9 +67,20 @@ class _AddCourseState extends ConsumerState<AddCourse> {
         ScaffoldMessenger.of(context).clearSnackBars();
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text(
-              'One Time only can add 5 course',
-              style: 14.sp(color: Colors.white),
+            content: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  'One Time only can add 5 course',
+                  style: 14.sp(color: Colors.white),
+                ),
+                Chip(
+                  side: BorderSide(color: Colors.black),
+                  padding: EdgeInsets.symmetric(horizontal: 2),
+                  backgroundColor: Colors.deepOrangeAccent,
+                  label: Text('Warning', style: 14.sp(color: Colors.white)),
+                ),
+              ],
             ),
           ),
         );
@@ -95,13 +118,32 @@ class _AddCourseState extends ConsumerState<AddCourse> {
     String formated(DateTime? date) =>
         date == null ? 'Not set' : DateFormat('yyyy-MM-dd h:mm a').format(date);
 
-    ref.listen(deleteCourseProvider, (p, n) {
+    ref.listen(joinStudCoursProvider, (p, n) {
       n.when(
         data: (_) {
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Delete course done', style: 14.sp())),
+            SnackBar(
+              content: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    '$count Courses is join with Student',
+                    style: 14.sp(color: Colors.white),
+                  ),
+                  Chip(
+                    side: BorderSide(color: Colors.black),
+                    padding: EdgeInsets.symmetric(horizontal: 2),
+                    backgroundColor: Colors.green,
+                    label: Text('Join', style: 14.sp(color: Colors.white)),
+                  ),
+                ],
+              ),
+            ),
           );
           ref.invalidate(getCourseProvider);
+          ref.invalidate(getIdStudentProvider(widget.s.id));
+          ref.invalidate(getJoinStudentProvider);
+          Navigator.pop(context);
         },
         error: (error, _) {
           ScaffoldMessenger.of(
@@ -113,36 +155,38 @@ class _AddCourseState extends ConsumerState<AddCourse> {
     });
 
     return Scaffold(
-      backgroundColor: Colors.blueGrey,
+      backgroundColor: Color(0xff304352),
       body: CustomScrollView(
         slivers: [
           SliverAppBar(
             backgroundColor: Colors.grey,
             pinned: true,
-            flexibleSpace: Flexible(
-              child: Padding(
-                padding: const EdgeInsets.only(right: 23, bottom: 5),
-                child: Align(
-                  alignment: Alignment.bottomRight,
-                  child: Chip(
-                    padding: EdgeInsets.symmetric(horizontal: 5),
-                    backgroundColor: Colors.green,
-                    label: RichText(
-                      text: TextSpan(
-                        children: [
-                          TextSpan(
-                            text: '5 / ',
-                            style: 16.sp(
-                              color: count == 5 ? Colors.black : Colors.white,
+            flexibleSpace: FlexibleSpaceBar(
+              background: SafeArea(
+                child: Padding(
+                  padding: const EdgeInsets.only(right: 23, bottom: 5),
+                  child: Align(
+                    alignment: Alignment.bottomRight,
+                    child: Chip(
+                      padding: EdgeInsets.symmetric(horizontal: 5),
+                      backgroundColor: Colors.green,
+                      label: RichText(
+                        text: TextSpan(
+                          children: [
+                            TextSpan(
+                              text: '5 / ',
+                              style: 16.sp(
+                                color: count == 5 ? Colors.black : Colors.white,
+                              ),
                             ),
-                          ),
-                          TextSpan(
-                            text: '$count',
-                            style: 14.sp(
-                              color: count == 5 ? Colors.black : Colors.white,
+                            TextSpan(
+                              text: '$count',
+                              style: 14.sp(
+                                color: count == 5 ? Colors.black : Colors.white,
+                              ),
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
                     ),
                   ),
@@ -224,7 +268,87 @@ class _AddCourseState extends ConsumerState<AddCourse> {
       ),
       floatingActionButton: FloatingActionButton.small(
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
-        onPressed: () {},
+        onPressed: () async {
+          final String showMesg =
+              choiceCourse.isEmpty && choiceCourseIds.isEmpty
+              ? 'No course selected'
+              : '$count Courses will be join';
+
+          showDialog(
+            context: context,
+            builder: (BuildContext dialogContext) {
+              final joinState = ref.watch(joinStudCoursProvider);
+              return AlertDialog(
+                content: ConstrainedBox(
+                  constraints: BoxConstraints(
+                    maxHeight: MediaQuery.of(context).size.height * 0.1,
+                    maxWidth: MediaQuery.of(context).size.width * 0.7,
+                  ),
+                  child: Container(
+                    padding: EdgeInsets.symmetric(horizontal: 10),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        Text(showMesg, style: 15.sp()),
+                        SizedBox(height: 10),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.end,
+                          children: [
+                            TextButton(
+                              onPressed: () {
+                                Navigator.pop(context);
+                              },
+                              child: Text('Cancel', style: 12.sp()),
+                            ),
+                            SizedBox(width: 15),
+                            joinState.isLoading
+                                ? CircularProgressIndicator()
+                                : ElevatedButton(
+                                    style: ElevatedButton.styleFrom(
+                                      backgroundColor: Colors.green,
+                                      padding: EdgeInsets.symmetric(
+                                        horizontal: 5,
+                                        vertical: 2,
+                                      ),
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(8),
+                                      ),
+                                    ),
+                                    onPressed:
+                                        choiceCourse.isEmpty &&
+                                            choiceCourseIds.isEmpty
+                                        ? null
+                                        : () async {
+                                            await ref
+                                                .read(
+                                                  joinStudCoursProvider
+                                                      .notifier,
+                                                )
+                                                .join(
+                                                  widget.s.id,
+                                                  choiceCourseIds,
+                                                );
+                                            Navigator.pop(dialogContext);
+                                          },
+                                    child: Text(
+                                      'Confirm',
+                                      style: 12.sp(color: Colors.white),
+                                    ),
+                                  ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              );
+            },
+          );
+        },
         backgroundColor: Colors.black,
         child: Icon(Icons.add, color: Colors.white),
       ),

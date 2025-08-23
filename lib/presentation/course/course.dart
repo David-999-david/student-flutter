@@ -40,9 +40,17 @@ class _CourseState extends ConsumerState<Course> {
 
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text(
-                'Delete course done',
-                style: 14.sp(color: Colors.white),
+              content: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text('Delete course done', style: 14.sp(color: Colors.white)),
+                  Chip(
+                    side: BorderSide(color: Colors.black),
+                    padding: EdgeInsets.symmetric(horizontal: 2),
+                    backgroundColor: Colors.redAccent,
+                    label: Text('Delete', style: 14.sp(color: Colors.white)),
+                  ),
+                ],
               ),
             ),
           );
@@ -63,7 +71,7 @@ class _CourseState extends ConsumerState<Course> {
     final filterState = ref.watch(courseFilterProvider);
 
     return Scaffold(
-      backgroundColor: Colors.blueGrey,
+      backgroundColor: Color(0xff304352),
       body: CustomScrollView(
         slivers: [
           SliverPadding(
@@ -73,7 +81,7 @@ class _CourseState extends ConsumerState<Course> {
                 children: [
                   Expanded(child: searchField(query, 'Search', onChanged)),
                   PopupMenuButton<courseFilter>(
-                    icon: Icon(Icons.arrow_drop_down),
+                    icon: Icon(Icons.arrow_drop_down, color: Colors.white),
                     initialValue: filterState,
                     onSelected: (value) =>
                         ref.read(courseFilterProvider.notifier).state = value,

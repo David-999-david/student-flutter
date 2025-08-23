@@ -108,9 +108,20 @@ class _CreateCourseState extends ConsumerState<CreateCourse> {
 
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text(
-                'Create new course done!',
-                style: 14.sp(color: Colors.white),
+              content: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    'Create new course done!',
+                    style: 14.sp(color: Colors.white),
+                  ),
+                  Chip(
+                    side: BorderSide(color: Colors.black),
+                    padding: EdgeInsets.symmetric(horizontal: 2),
+                    backgroundColor: Colors.green,
+                    label: Text('Success', style: 14.sp(color: Colors.white)),
+                  ),
+                ],
               ),
             ),
           );
@@ -137,7 +148,7 @@ class _CreateCourseState extends ConsumerState<CreateCourse> {
     });
 
     return Scaffold(
-      backgroundColor: Colors.blueGrey,
+      backgroundColor: Color(0xff304352),
       appBar: AppBar(
         title: Text('Create Course', style: 20.sp(color: Colors.white)),
         centerTitle: true,
@@ -278,9 +289,27 @@ class _CreateCourseState extends ConsumerState<CreateCourse> {
 
                                 ScaffoldMessenger.of(context).showSnackBar(
                                   SnackBar(
-                                    content: Text(
-                                      'Start or End Date and Time missing',
-                                      style: 14.sp(color: Colors.white),
+                                    content: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Text(
+                                          'Start or End Date and Time missing',
+                                          style: 14.sp(color: Colors.white),
+                                        ),
+                                        Chip(
+                                          side: BorderSide(color: Colors.black),
+                                          padding: EdgeInsets.symmetric(
+                                            horizontal: 2,
+                                          ),
+                                          backgroundColor:
+                                              Colors.deepOrangeAccent,
+                                          label: Text(
+                                            'Warning',
+                                            style: 14.sp(color: Colors.white),
+                                          ),
+                                        ),
+                                      ],
                                     ),
                                   ),
                                 );
@@ -290,9 +319,58 @@ class _CreateCourseState extends ConsumerState<CreateCourse> {
 
                                 ScaffoldMessenger.of(context).showSnackBar(
                                   SnackBar(
-                                    content: Text(
-                                      'Start Date must be before End Date',
-                                      style: 14.sp(color: Colors.white),
+                                    content: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Text(
+                                          'Start Date must be before End Date',
+                                          style: 14.sp(color: Colors.white),
+                                        ),
+                                        Chip(
+                                          side: BorderSide(color: Colors.black),
+                                          padding: EdgeInsets.symmetric(
+                                            horizontal: 2,
+                                          ),
+                                          backgroundColor:
+                                              Colors.deepOrangeAccent,
+                                          label: Text(
+                                            'Warning',
+                                            style: 14.sp(color: Colors.white),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                );
+                                return;
+                              }
+                              if (startDate == endDate) {
+                                ScaffoldMessenger.of(context).clearSnackBars();
+
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                    content: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Text(
+                                          'Start and End Date are the same!',
+                                          style: 14.sp(color: Colors.white),
+                                        ),
+                                        Chip(
+                                          side: BorderSide(color: Colors.black),
+                                          padding: EdgeInsets.symmetric(
+                                            horizontal: 2,
+                                          ),
+                                          backgroundColor:
+                                              Colors.deepOrangeAccent,
+                                          label: Text(
+                                            'Warning',
+                                            style: 14.sp(color: Colors.white),
+                                          ),
+                                        ),
+                                      ],
                                     ),
                                   ),
                                 );
@@ -301,9 +379,27 @@ class _CreateCourseState extends ConsumerState<CreateCourse> {
                               if (endDate!.isBefore(startDate!)) {
                                 ScaffoldMessenger.of(context).showSnackBar(
                                   SnackBar(
-                                    content: Text(
-                                      'End Date must be after Start Date',
-                                      style: 14.sp(color: Colors.white),
+                                    content: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Text(
+                                          'End Date must be after Start Date',
+                                          style: 14.sp(color: Colors.white),
+                                        ),
+                                        Chip(
+                                          side: BorderSide(color: Colors.black),
+                                          padding: EdgeInsets.symmetric(
+                                            horizontal: 2,
+                                          ),
+                                          backgroundColor:
+                                              Colors.deepOrangeAccent,
+                                          label: Text(
+                                            'Warning',
+                                            style: 14.sp(color: Colors.white),
+                                          ),
+                                        ),
+                                      ],
                                     ),
                                   ),
                                 );

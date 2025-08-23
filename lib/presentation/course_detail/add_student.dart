@@ -58,9 +58,20 @@ class _AddStudentState extends ConsumerState<AddStudent> {
 
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text(
-                'Student Limit reach',
-                style: 14.sp(color: Colors.white),
+              content: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    'Student Limit reach',
+                    style: 14.sp(color: Colors.white),
+                  ),
+                  Chip(
+                    side: BorderSide(color: Colors.black),
+                    padding: EdgeInsets.symmetric(horizontal: 2),
+                    backgroundColor: Colors.deepOrangeAccent,
+                    label: Text('Warning', style: 14.sp(color: Colors.white)),
+                  ),
+                ],
               ),
             ),
           );
@@ -99,9 +110,20 @@ class _AddStudentState extends ConsumerState<AddStudent> {
 
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text(
-                '$count Students successfully Join this course',
-                style: 14.sp(color: Colors.white),
+              content: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    '$count Students successfully Join this course',
+                    style: 14.sp(color: Colors.white),
+                  ),
+                  Chip(
+                    side: BorderSide(color: Colors.black),
+                    padding: EdgeInsets.symmetric(horizontal: 2),
+                    backgroundColor: Colors.green,
+                    label: Text('Join', style: 14.sp(color: Colors.white)),
+                  ),
+                ],
               ),
             ),
           );
@@ -111,7 +133,7 @@ class _AddStudentState extends ConsumerState<AddStudent> {
           for (final id in joinIds) {
             ref.invalidate(getIdStudentProvider(id));
           }
-          ref.invalidate(getJoinStudentProvider(''));
+          ref.invalidate(getJoinStudentProvider);
           Navigator.pop(context);
         },
         error: (error, _) {
@@ -126,14 +148,14 @@ class _AddStudentState extends ConsumerState<AddStudent> {
     });
 
     return Scaffold(
-      backgroundColor: Colors.blueGrey,
+      backgroundColor: Color(0xff304352),
       body: CustomScrollView(
         slivers: [
           appBar(widget.course, curretStuds, context),
           selected.isEmpty
               ? SliverToBoxAdapter(child: SizedBox.shrink())
               : SliverPadding(
-                  padding: EdgeInsets.only(left: 5, right: 5, top: 20),
+                  padding: EdgeInsets.only(left: 10, right: 5, top: 20),
                   sliver: SliverToBoxAdapter(
                     child: Wrap(
                       spacing: 8,
@@ -199,7 +221,7 @@ class _AddStudentState extends ConsumerState<AddStudent> {
           ),
         ],
       ),
-      floatingActionButton: FloatingActionButton(
+      floatingActionButton: FloatingActionButton.small(
         onPressed: () {
           final String showMesg = selected.isEmpty && selectedId.isEmpty
               ? 'No student selected'
@@ -308,7 +330,7 @@ Widget student(
 ) {
   final isSelected = selectedIds.contains(s.id);
   return Padding(
-    padding: const EdgeInsets.only(bottom: 8),
+    padding: const EdgeInsets.only(bottom: 15),
     child: InkWell(
       onTap: () {
         onSelect(s, context);

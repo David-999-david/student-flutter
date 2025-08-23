@@ -33,9 +33,20 @@ class _CourseDetailState extends ConsumerState<CourseDetail> {
           ScaffoldMessenger.of(context).clearSnackBars();
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text(
-                'Cancel Join success',
-                style: 14.sp(color: Colors.white),
+              content: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    'Cancel Join success',
+                    style: 14.sp(color: Colors.white),
+                  ),
+                  Chip(
+                    side: BorderSide(color: Colors.black),
+                    padding: EdgeInsets.symmetric(horizontal: 2),
+                    backgroundColor: Colors.redAccent,
+                    label: Text('Delete', style: 14.sp(color: Colors.white)),
+                  ),
+                ],
               ),
             ),
           );
@@ -57,14 +68,15 @@ class _CourseDetailState extends ConsumerState<CourseDetail> {
     });
 
     return Scaffold(
-      backgroundColor: Colors.blueGrey,
+      backgroundColor: Color(0xff304352),
       body: CustomScrollView(
         slivers: [
           SliverAppBar(
+            pinned: true,
             backgroundColor: Colors.grey,
             actions: [
               Padding(
-                padding: const EdgeInsets.only(right: 10, bottom: 5),
+                padding: const EdgeInsets.only(right: 20, bottom: 5),
                 child: ElevatedButton(
                   style: ElevatedButton.styleFrom(
                     padding: EdgeInsets.symmetric(horizontal: 10),

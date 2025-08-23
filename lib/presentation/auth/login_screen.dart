@@ -44,7 +44,7 @@ class LoginScreen extends ConsumerWidget {
       body: Container(
         decoration: BoxDecoration(
           gradient: LinearGradient(
-            colors: [Color(0xff5A3F37), Color(0xff2C7744)],
+            colors: [Color(0xffd7d2cc), Color(0xff304352)],
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
           ),
@@ -67,7 +67,7 @@ class LoginScreen extends ConsumerWidget {
                           image: AssetImage('assets/images/uu.png'),
                           fit: BoxFit.cover,
                         ),
-                        border: Border.all(color: Colors.white),
+                        border: Border.all(color: Colors.black),
                         borderRadius: BorderRadius.circular(80),
                       ),
                     ),

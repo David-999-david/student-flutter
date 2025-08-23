@@ -1,4 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:student/data/model/course_model.dart';
 import 'package:student/data/model/student_model.dart';
 import 'package:student/data/service/student_service.dart';
 
@@ -129,3 +130,34 @@ class GetJoinStudentNotifier extends StateNotifier<AsyncValue<List<Student>>> {
 enum studentFilter { all, active, inactive }
 
 final filterProvider = StateProvider<studentFilter>((ref) => studentFilter.all);
+
+final joinStudCoursProvider =
+    StateNotifierProvider<JoinStudCoursNotifier, AsyncValue<void>>(
+      (ref) => JoinStudCoursNotifier(),
+    );
+
+class JoinStudCoursNotifier extends StateNotifier<AsyncValue<void>> {
+  JoinStudCoursNotifier() : super(AsyncValue.data(null));
+
+  Future<void> join(int studentId, List<int> courseIds) async {
+    state = AsyncValue.loading();
+    state = await AsyncValue.guard(
+      () => StudentService().join(studentId, courseIds),
+    );
+  }
+}
+
+final studCancelProvider =
+    StateNotifierProvider<StudCancelNotifier, AsyncValue<CancelJoin?>>(
+      (ref) => StudCancelNotifier(),
+    );
+
+class StudCancelNotifier extends StateNotifier<AsyncValue<CancelJoin?>> {
+  StudCancelNotifier() : super(AsyncValue.data(null));
+
+  Future<void> cancel(CancelJoin ids) async {
+    state = AsyncValue.loading();
+    await AsyncValue.guard(() => StudentService().cancel(ids));
+    state = AsyncData(ids);
+  }
+}

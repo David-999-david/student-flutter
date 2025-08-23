@@ -88,13 +88,21 @@ class _EditStudentState extends ConsumerState<EditStudent> {
           ScaffoldMessenger.of(context).clearSnackBars();
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text(
-                'Updated success',
-                style: 14.sp(color: Colors.white),
+              content: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text('Updated success', style: 14.sp(color: Colors.white)),
+                  Chip(
+                    side: BorderSide(color: Colors.black),
+                    padding: EdgeInsets.symmetric(horizontal: 2),
+                    backgroundColor: Colors.green,
+                    label: Text('Updated', style: 14.sp(color: Colors.white)),
+                  ),
+                ],
               ),
             ),
           );
-          ref.invalidate(getJoinStudentProvider(''));
+          ref.invalidate(getJoinStudentProvider);
           ref.invalidate(getIdStudentProvider(widget.currentStud.id));
           Navigator.pop(context);
         },
@@ -109,7 +117,7 @@ class _EditStudentState extends ConsumerState<EditStudent> {
     });
 
     return Scaffold(
-      backgroundColor: Colors.blueGrey,
+      backgroundColor: Color(0xff304352),
       appBar: AppBar(
         title: Text('Edit student', style: 20.sp(color: Colors.white)),
         centerTitle: true,
@@ -165,6 +173,9 @@ class _EditStudentState extends ConsumerState<EditStudent> {
                           );
                         },
                         data: (data) {
+                          selectedGender = data.firstWhere(
+                            (g) => g.name == widget.currentStud.gender,
+                          );
                           return genderDropdown(
                             data,
                             selectedGender,
