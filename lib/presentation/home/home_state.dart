@@ -70,18 +70,17 @@ class EditSutdentNotifier extends StateNotifier<AsyncValue<void>> {
 }
 
 final deleteStudProvider =
-    StateNotifierProvider<DeleteStudNotifier, AsyncValue<void>>(
+    StateNotifierProvider<DeleteStudNotifier, AsyncValue<int?>>(
       (ref) => DeleteStudNotifier(),
     );
 
-class DeleteStudNotifier extends StateNotifier<AsyncValue<void>> {
+class DeleteStudNotifier extends StateNotifier<AsyncValue<int?>> {
   DeleteStudNotifier() : super(AsyncValue.data(null));
 
   Future<void> delete(int id, List<int?> courseIds) async {
     state = AsyncValue.loading();
-    state = await AsyncValue.guard(
-      () => StudentService().delete(id, courseIds),
-    );
+    await AsyncValue.guard(() => StudentService().delete(id, courseIds));
+    state = AsyncData(id);
   }
 }
 

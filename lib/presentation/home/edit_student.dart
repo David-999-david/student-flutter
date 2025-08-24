@@ -168,7 +168,9 @@ class _EditStudentState extends ConsumerState<EditStudent> {
                             child: SizedBox(
                               height: 30,
                               width: 30,
-                              child: CircularProgressIndicator(),
+                              child: CircularProgressIndicator(
+                                color: Colors.yellow,
+                              ),
                             ),
                           );
                         },
@@ -196,7 +198,9 @@ class _EditStudentState extends ConsumerState<EditStudent> {
                           child: SizedBox(
                             height: 30,
                             width: 30,
-                            child: CircularProgressIndicator(),
+                            child: CircularProgressIndicator(
+                              color: Colors.yellow,
+                            ),
                           ),
                         )
                       : Center(

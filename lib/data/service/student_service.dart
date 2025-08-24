@@ -131,10 +131,7 @@ class StudentService {
     final trimed = query?.trim() ?? '';
     final qp = trimed.isEmpty ? null : {'q': trimed};
     try {
-      final response = await _dio.get(
-        ApiUrl.student,
-        queryParameters: qp,
-      );
+      final response = await _dio.get(ApiUrl.student, queryParameters: qp);
 
       final status = response.statusCode!;
 
@@ -190,6 +187,27 @@ class StudentService {
           'Cancel join student with id${ids.studentId} and course with id${ids.courseId} Success',
         );
         return;
+      } else {
+        throw Exception(
+          'Error => ${response.data['error']}, ${response.statusCode}',
+        );
+      }
+    } on DioException catch (e) {
+      throw Exception(
+        '${e.response!.data['detail']}, ${e.response!.data['error']}',
+      );
+    }
+  }
+
+  Future<Detail> getDetail() async {
+    try {
+      final response = await _dio.get('${ApiUrl.student}/detail');
+
+      final status = response.statusCode!;
+
+      if (status >= 200 && status < 300) {
+        final data = response.data['data'];
+        return Detail.fromJson(data);
       } else {
         throw Exception(
           'Error => ${response.data['error']}, ${response.statusCode}',

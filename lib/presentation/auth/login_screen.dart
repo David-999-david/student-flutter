@@ -77,7 +77,11 @@ class LoginScreen extends ConsumerWidget {
                     pasTextField(psw, 'Password', 'Password'),
                     SizedBox(height: 10),
                     loginstate.isLoading
-                        ? Center(child: CircularProgressIndicator())
+                        ? Center(
+                            child: CircularProgressIndicator(
+                              color: Colors.yellow,
+                            ),
+                          )
                         : ElevatedButton(
                             style: ElevatedButton.styleFrom(
                               backgroundColor: Colors.blue,

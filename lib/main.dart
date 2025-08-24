@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:student/dio_client.dart';
+import 'package:student/presentation/auth/handle_start.dart';
 import 'package:student/presentation/auth/login_screen.dart';
 import 'package:student/presentation/bottom_nav/bottom_nav.dart';
+import 'package:student/presentation/test/pie.dart';
+import 'package:student/presentation/test/test.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();

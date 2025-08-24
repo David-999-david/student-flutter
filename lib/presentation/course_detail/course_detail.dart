@@ -169,7 +169,9 @@ class _CourseDetailState extends ConsumerState<CourseDetail> {
             },
             loading: () {
               return SliverFillRemaining(
-                child: Center(child: CircularProgressIndicator()),
+                child: Center(
+                  child: CircularProgressIndicator(color: Colors.yellow),
+                ),
               );
             },
             data: (detail) {
@@ -313,8 +315,10 @@ Widget studentsInCourse(
   return Consumer(
     builder: (context, ref, child) {
       final cancelState = ref.watch(cancelJoinProvider);
-      return cancelState.isLoading
-          ? Center(child: CircularProgressIndicator())
+      final ondeleteSId = cancelState.valueOrNull;
+      final ondelete = ondeleteSId?.studentId == s.id;
+      return cancelState.isLoading && ondelete
+          ? Center(child: CircularProgressIndicator(color: Colors.yellow))
           : Padding(
               padding: const EdgeInsets.symmetric(vertical: 5),
               child: Slidable(

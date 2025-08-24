@@ -283,7 +283,11 @@ class _EditCourseState extends ConsumerState<EditCourse> {
                   ),
                   SizedBox(height: 20),
                   updateState.isLoading
-                      ? Center(child: CircularProgressIndicator())
+                      ? Center(
+                          child: CircularProgressIndicator(
+                            color: Colors.yellow,
+                          ),
+                        )
                       : Center(
                           child: ElevatedButton(
                             style: ElevatedButton.styleFrom(

@@ -268,7 +268,11 @@ class _CreateCourseState extends ConsumerState<CreateCourse> {
                   ),
                   SizedBox(height: 20),
                   createState.isLoading
-                      ? Center(child: CircularProgressIndicator())
+                      ? Center(
+                          child: CircularProgressIndicator(
+                            color: Colors.yellow,
+                          ),
+                        )
                       : Center(
                           child: ElevatedButton(
                             style: ElevatedButton.styleFrom(

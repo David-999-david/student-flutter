@@ -42,7 +42,7 @@ class _AddStudentState extends ConsumerState<AddStudent> {
     final getStuState = ref.watch(getJoinStudentProvider(query.text));
     void onChange(String? query) {
       setState(() {
-        ref.read(getStudentProvider(query));
+        ref.read(getJoinStudentProvider(query));
       });
     }
 
@@ -184,7 +184,7 @@ class _AddStudentState extends ConsumerState<AddStudent> {
                   child: SizedBox(
                     height: 30,
                     width: 30,
-                    child: CircularProgressIndicator(),
+                    child: CircularProgressIndicator(color: Colors.yellow),
                   ),
                 ),
               );
@@ -259,7 +259,9 @@ class _AddStudentState extends ConsumerState<AddStudent> {
                             ),
                             SizedBox(width: 15),
                             joinState.isLoading
-                                ? CircularProgressIndicator()
+                                ? CircularProgressIndicator(
+                                    color: Colors.yellow,
+                                  )
                                 : ElevatedButton(
                                     style: ElevatedButton.styleFrom(
                                       backgroundColor: Colors.green,

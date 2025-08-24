@@ -33,7 +33,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
     void onChange(String? query) {
       setState(() {
-        ref.read(getStudentProvider(query));
+        ref.read(getJoinStudentProvider(query));
       });
     }
 
@@ -57,7 +57,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               ),
             ),
           );
-          ref.invalidate(getStudentProvider(query.text));
           ref.invalidate(getCourseProvider);
           ref.invalidate(getJoinStudentProvider(query.text));
         },
@@ -165,7 +164,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                   child: SizedBox(
                     height: 30,
                     width: 30,
-                    child: CircularProgressIndicator(),
+                    child: CircularProgressIndicator(color: Colors.yellow),
                   ),
                 ),
               );
@@ -235,151 +234,168 @@ Widget studentSetting(IconData icon, String title, VoidCallback ontap) {
 Widget student(Student s, int index, BuildContext context) {
   return Consumer(
     builder: (context, ref, child) {
-      // final deleteState = ref.watch(deleteStudProvider);
-      return InkWell(
-        onTap: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) {
-                return StudentDetail(s: s);
+      final deleteState = ref.watch(deleteStudProvider);
+      final ondeleteId = deleteState.valueOrNull;
+      final ondelete = s.id == ondeleteId;
+      return deleteState.isLoading && ondelete
+          ? Center(child: CircularProgressIndicator(color: Colors.yellow))
+          : InkWell(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) {
+                      return StudentDetail(s: s);
+                    },
+                  ),
+                );
               },
-            ),
-          );
-        },
-        child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 5),
-          child: Slidable(
-            endActionPane: ActionPane(
-              motion: DrawerMotion(),
-              extentRatio: 0.23,
-              children: [
-                SlidableAction(
-                  onPressed: (_) {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) {
-                          return EditStudent(currentStud: s);
+              child: Padding(
+                padding: const EdgeInsets.symmetric(vertical: 5),
+                child: Slidable(
+                  endActionPane: ActionPane(
+                    motion: DrawerMotion(),
+                    extentRatio: 0.23,
+                    children: [
+                      SlidableAction(
+                        onPressed: (_) {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) {
+                                return EditStudent(currentStud: s);
+                              },
+                            ),
+                          );
                         },
+                        backgroundColor: Colors.green,
+                        foregroundColor: Colors.white,
+                        icon: Icons.edit,
+                        padding: EdgeInsets.symmetric(horizontal: 5),
+                        borderRadius: BorderRadius.circular(8),
                       ),
-                    );
-                  },
-                  backgroundColor: Colors.green,
-                  foregroundColor: Colors.white,
-                  icon: Icons.edit,
-                  padding: EdgeInsets.symmetric(horizontal: 5),
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                SlidableAction(
-                  onPressed: (_) {
-                    showDialog(
-                      context: context,
-                      builder: (BuildContext diaContext) {
-                        return AlertDialog(
-                          content: ConstrainedBox(
-                            constraints: BoxConstraints(
-                              maxHeight:
-                                  MediaQuery.of(context).size.height * 0.1,
-                              maxWidth: MediaQuery.of(context).size.width * 0.7,
-                            ),
-                            child: Container(
-                              padding: EdgeInsets.symmetric(horizontal: 10),
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(14),
-                              ),
-                              child: Center(
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.end,
-                                  children: [
-                                    Text(
-                                      'Are you sure want to delete?',
-                                      style: 15.sp(),
+                      SlidableAction(
+                        onPressed: (_) {
+                          showDialog(
+                            context: context,
+                            builder: (BuildContext diaContext) {
+                              return AlertDialog(
+                                content: ConstrainedBox(
+                                  constraints: BoxConstraints(
+                                    maxHeight:
+                                        MediaQuery.of(context).size.height *
+                                        0.1,
+                                    maxWidth:
+                                        MediaQuery.of(context).size.width * 0.7,
+                                  ),
+                                  child: Container(
+                                    padding: EdgeInsets.symmetric(
+                                      horizontal: 10,
                                     ),
-                                    SizedBox(height: 15),
-                                    Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      children: [
-                                        TextButton(
-                                          onPressed: () {
-                                            Navigator.pop(context);
-                                          },
-                                          child: Text('Cancel', style: 12.sp()),
-                                        ),
-                                        ElevatedButton(
-                                          style: ElevatedButton.styleFrom(
-                                            padding: EdgeInsets.symmetric(
-                                              horizontal: 5,
-                                              vertical: 2,
-                                            ),
-                                            backgroundColor: Colors.red,
-                                            shape: RoundedRectangleBorder(
-                                              borderRadius:
-                                                  BorderRadius.circular(8),
-                                            ),
-                                          ),
-                                          onPressed: () async {
-                                            final courseIds = s.courses
-                                                .map((c) => c.id)
-                                                .toList();
-                                            await ref
-                                                .read(
-                                                  deleteStudProvider.notifier,
-                                                )
-                                                .delete(s.id, courseIds);
-                                            Navigator.pop(diaContext);
-                                          },
-                                          child: Text(
-                                            'Delete',
-                                            style: 12.sp(color: Colors.white),
-                                          ),
-                                        ),
-                                      ],
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(14),
                                     ),
-                                  ],
+                                    child: Center(
+                                      child: Column(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.end,
+                                        children: [
+                                          Text(
+                                            'Are you sure want to delete?',
+                                            style: 15.sp(),
+                                          ),
+                                          SizedBox(height: 15),
+                                          Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
+                                            children: [
+                                              TextButton(
+                                                onPressed: () {
+                                                  Navigator.pop(context);
+                                                },
+                                                child: Text(
+                                                  'Cancel',
+                                                  style: 12.sp(),
+                                                ),
+                                              ),
+                                              ElevatedButton(
+                                                style: ElevatedButton.styleFrom(
+                                                  padding: EdgeInsets.symmetric(
+                                                    horizontal: 5,
+                                                    vertical: 2,
+                                                  ),
+                                                  backgroundColor: Colors.red,
+                                                  shape: RoundedRectangleBorder(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                          8,
+                                                        ),
+                                                  ),
+                                                ),
+                                                onPressed: () async {
+                                                  final courseIds = s.courses
+                                                      .map((c) => c.id)
+                                                      .toList();
+                                                  await ref
+                                                      .read(
+                                                        deleteStudProvider
+                                                            .notifier,
+                                                      )
+                                                      .delete(s.id, courseIds);
+                                                  Navigator.pop(diaContext);
+                                                },
+                                                child: Text(
+                                                  'Delete',
+                                                  style: 12.sp(
+                                                    color: Colors.white,
+                                                  ),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
                                 ),
-                              ),
-                            ),
+                              );
+                            },
+                          );
+                        },
+                        backgroundColor: Colors.red,
+                        foregroundColor: Colors.white,
+                        icon: Icons.delete,
+                        padding: EdgeInsets.symmetric(horizontal: 5),
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                    ],
+                  ),
+                  child: Container(
+                    padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                    width: double.infinity,
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      border: Border.all(color: Colors.black),
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: Row(
+                      children: [
+                        CircleAvatar(
+                          backgroundColor: Colors.black,
+                          radius: 10,
+                          child: Text(
+                            index.toString(),
+                            style: 14.sp(color: Colors.white),
                           ),
-                        );
-                      },
-                    );
-                  },
-                  backgroundColor: Colors.red,
-                  foregroundColor: Colors.white,
-                  icon: Icons.delete,
-                  padding: EdgeInsets.symmetric(horizontal: 5),
-                  borderRadius: BorderRadius.circular(8),
-                ),
-              ],
-            ),
-            child: Container(
-              padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-              width: double.infinity,
-              decoration: BoxDecoration(
-                color: Colors.white,
-                border: Border.all(color: Colors.black),
-                borderRadius: BorderRadius.circular(8),
-              ),
-              child: Row(
-                children: [
-                  CircleAvatar(
-                    backgroundColor: Colors.black,
-                    radius: 10,
-                    child: Text(
-                      index.toString(),
-                      style: 14.sp(color: Colors.white),
+                        ),
+                        SizedBox(width: 15),
+                        Text(s.name, style: 15.sp(color: Colors.black)),
+                      ],
                     ),
                   ),
-                  SizedBox(width: 15),
-                  Text(s.name, style: 15.sp(color: Colors.black)),
-                ],
+                ),
               ),
-            ),
-          ),
-        ),
-      );
+            );
     },
   );
 }

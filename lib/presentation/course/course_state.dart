@@ -16,10 +16,12 @@ class CreateCourseNotifier extends StateNotifier<AsyncValue<void>> {
   }
 }
 
-final getCourseProvider = StateNotifierProvider
-    .family<GetCourseNotifier, AsyncValue<List<CourseModel>>, String?>(
-      (ref, query) => GetCourseNotifier(ref, query),
-    );
+final getCourseProvider =
+    StateNotifierProvider.family<
+      GetCourseNotifier,
+      AsyncValue<List<CourseModel>>,
+      String?
+    >((ref, query) => GetCourseNotifier(ref, query));
 
 class GetCourseNotifier extends StateNotifier<AsyncValue<List<CourseModel>>> {
   GetCourseNotifier(this.ref, this.query) : super(AsyncValue.loading()) {
@@ -50,16 +52,17 @@ class EditCourseNotifier extends StateNotifier<AsyncValue<void>> {
 }
 
 final deleteCourseProvider =
-    StateNotifierProvider<DeleteCourseNotifier, AsyncValue<void>>(
+    StateNotifierProvider<DeleteCourseNotifier, AsyncValue<int?>>(
       (ref) => DeleteCourseNotifier(),
     );
 
-class DeleteCourseNotifier extends StateNotifier<AsyncValue<void>> {
+class DeleteCourseNotifier extends StateNotifier<AsyncValue<int?>> {
   DeleteCourseNotifier() : super(AsyncValue.data(null));
 
   Future<void> delete(int id) async {
     state = AsyncValue.loading();
-    state = await AsyncValue.guard(() => CourseService().delete(id));
+    await AsyncValue.guard(() => CourseService().delete(id));
+    state = AsyncData(id);
   }
 }
 

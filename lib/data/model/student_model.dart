@@ -180,3 +180,35 @@ class CourseForStud {
     );
   }
 }
+
+class Detail {
+  final int sst;
+  final int ssf;
+  final int sgm;
+  final int sgf;
+  final int sgo;
+  final int cst;
+  final int csf;
+
+  Detail({
+    required this.sst,
+    required this.ssf,
+    required this.sgm,
+    required this.sgf,
+    required this.sgo,
+    required this.cst,
+    required this.csf,
+  });
+
+  factory Detail.fromJson(Map<String, dynamic> json) {
+    return Detail(
+      sst: json['s_s_t'],
+      ssf: json['s_s_f'],
+      sgm: json['s_g_m'],
+      sgf: json['s_g_f'],
+      sgo: json['s_g_o'],
+      cst: json['c_s_t'],
+      csf: json['c_s_f'],
+    );
+  }
+}

@@ -158,7 +158,9 @@ class _CreateStudendState extends ConsumerState<CreateStudent> {
                             child: SizedBox(
                               height: 30,
                               width: 30,
-                              child: CircularProgressIndicator(),
+                              child: CircularProgressIndicator(
+                                color: Colors.yellow,
+                              ),
                             ),
                           );
                         },
@@ -179,11 +181,15 @@ class _CreateStudendState extends ConsumerState<CreateStudent> {
                     ],
                   ),
                   insertstuState.isLoading
-                      ? SizedBox(
-                          height: 30,
-                          width: 30,
-                          child: CircularProgressIndicator(),
-                        )
+                      ? Center(
+                        child: SizedBox(
+                            height: 30,
+                            width: 30,
+                            child: CircularProgressIndicator(
+                              color: Colors.yellow,
+                            ),
+                          ),
+                      )
                       : Center(
                           child: ElevatedButton(
                             style: ElevatedButton.styleFrom(
